@@ -4,10 +4,14 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.hzby.lhj.util.EncryptUtil;
+
+@CrossOrigin
 @RestController
 @RequestMapping("/cookie")
 public class CookieController {
@@ -15,7 +19,7 @@ public class CookieController {
 	@RequestMapping(value="/setCookie",method=RequestMethod.GET)
 	public String setCookid(HttpServletResponse response) {
 		Cookie cookie = new Cookie("sessionId","CookieTestInfo");
-		cookie.setMaxAge(10);
+		cookie.setMaxAge(60*10);
 		response.addCookie(cookie);
 		return "添加cookie成功";
 	}
@@ -38,5 +42,11 @@ public class CookieController {
 			e.printStackTrace();
 		}
 	    return "销毁cookie成功";
+	}
+	
+	@RequestMapping("/encrypt")
+	public String encryptTest(String pwd) {
+		System.out.println(EncryptUtil.getSHA256Str(pwd));
+		return EncryptUtil.getSHA256Str(pwd);
 	}
 }
