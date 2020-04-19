@@ -30,6 +30,7 @@ public class JWTUtil {
 //		System.out.println("签发时间:"+sdf.format(claims.getIssuedAt()));
 //		System.out.println("过期时间:"+sdf.format(claims.getExpiration()));
 //		System.out.println("当前时间:"+sdf.format(new Date()) );
+//
 //	}
 	
 	public static String setJWT(String id, String msg ,Integer time) {
