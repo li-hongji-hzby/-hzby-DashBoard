@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.hzby.lhj.mapper.RealtimeOverviewMapper" >
+  <resultMap id="BaseResultMap" type="cn.hzby.lhj.po.RealtimeOverview" >
+    <id column="property" property="property" jdbcType="VARCHAR" />
+    <result column="value" property="value" jdbcType="REAL" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    property, value
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="cn.hzby.lhj.po.RealtimeOverviewExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from realtime_overview
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from realtime_overview
+    where property = #{property,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from realtime_overview
+    where property = #{property,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="cn.hzby.lhj.po.RealtimeOverviewExample" >
+    delete from realtime_overview
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="cn.hzby.lhj.po.RealtimeOverview" >
+    insert into realtime_overview (property, value)
+    values (#{property,jdbcType=VARCHAR}, #{value,jdbcType=REAL})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.hzby.lhj.po.RealtimeOverview" >
+    insert into realtime_overview
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="property != null" >
+        property,
+      </if>
+      <if test="value != null" >
+        value,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="property != null" >
+        #{property,jdbcType=VARCHAR},
+      </if>
+      <if test="value != null" >
+        #{value,jdbcType=REAL},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="cn.hzby.lhj.po.RealtimeOverviewExample" resultType="java.lang.Integer" >
+    select count(*) from realtime_overview
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update realtime_overview
+    <set >
+      <if test="record.property != null" >
+        property = #{record.property,jdbcType=VARCHAR},
+      </if>
+      <if test="record.value != null" >
+        value = #{record.value,jdbcType=REAL},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update realtime_overview
+    set property = #{record.property,jdbcType=VARCHAR},
+      value = #{record.value,jdbcType=REAL}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.hzby.lhj.po.RealtimeOverview" >
+    update realtime_overview
+    <set >
+      <if test="value != null" >
+        value = #{value,jdbcType=REAL},
+      </if>
+    </set>
+    where property = #{property,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.hzby.lhj.po.RealtimeOverview" >
+    update realtime_overview
+    set value = #{value,jdbcType=REAL}
+    where property = #{property,jdbcType=VARCHAR}
+  </update>
+</mapper>

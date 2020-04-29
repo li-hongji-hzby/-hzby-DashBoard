@@ -33,13 +33,14 @@
 			targetPackage="cn.hzby.lhj.mapper" targetProject=".\src\main\java">
 			<property name="enableSubPackages" value="true" />
 		</javaClientGenerator>
-		<!-- <table tableName="backmenu"></table> -->
 		<!-- <table tableName="realtime_air_compressor"></table>
 		<table tableName="realtime_dryer"></table>
 		<table tableName="realtime_flow_meter"></table>
 		<table tableName="summary_day"></table>
 		<table tableName="summary_hour"></table>
-		<table tableName="summary_month"></table> -->
+		<table tableName="summary_month"></table>
 		<table tableName="user"></table>
+		<table tableName="summary_5min"></table>
+		<table tableName="realtime_overview"></table> -->
 	</context>
 </generatorConfiguration>
