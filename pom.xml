@@ -78,13 +78,20 @@
 		    <artifactId>spring-boot-starter-aop</artifactId>
 		</dependency>
 		
+        <!-- 时序数据库 TSDB依赖 -->
+		<dependency>
+		    <groupId>com.aliyun</groupId>
+		    <artifactId>hitsdb-client</artifactId>
+		    <version>0.2.7</version>
+		</dependency>
+		
 		<!-- slf4j依赖 -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
             <version>1.7.25</version>
         </dependency>
-		
+        
 		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

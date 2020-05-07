@@ -41,6 +41,9 @@
 		<table tableName="summary_month"></table>
 		<table tableName="user"></table>
 		<table tableName="summary_5min"></table>
-		<table tableName="realtime_overview"></table> -->
+		<table tableName="realtime_overview"></table>
+		<table tableName="machine"></table>
+		<table tableName="machine_type"></table>
+		<table tableName="machine_attribute"></table> -->
 	</context>
 </generatorConfiguration>
