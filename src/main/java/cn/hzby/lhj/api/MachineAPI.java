@@ -21,7 +21,6 @@ public class MachineAPI {
 	public List<Machine> listAll() throws Exception{
 		return machineService.listAll();
 	}
-	
 
 	@RequestMapping("/listAllWithAttributes")
 	public List<MachineWithAttributes> listAllWithAttributes() throws Exception{

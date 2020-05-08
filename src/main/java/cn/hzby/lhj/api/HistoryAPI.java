@@ -1,5 +1,6 @@
 package cn.hzby.lhj.api;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,14 +37,15 @@ public class HistoryAPI {
 		List<QueryResult> queryResult = tsdbUtils.getData(Long.valueOf(JSONMap.get("startTime")), Long.valueOf(JSONMap.get("endTime")), JSONMap.get("device"), JSONMap.get("downsample"), metricsList);
 //		System.out.println(queryResult);
 		Map<String, Object> result = new HashMap<String, Object>();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
 		for(QueryResult qs:queryResult) {
 //			System.out.println(qs.getDps());
 			Set<Entry<Long, Object>> entries = qs.getDps().entrySet();
 			List<String> times= new ArrayList<>();
-			List<Double> datas= new ArrayList<>();
+			List<Integer> datas= new ArrayList<>();
 			for(Entry<Long, Object> entry : entries) {
-				times.add(entry.getKey().toString());
-				datas.add(Double.valueOf(entry.getValue().toString()));
+				times.add(sdf.format(Long.valueOf(entry.getKey().toString())*1000));
+				datas.add((Double.valueOf(entry.getValue().toString())).intValue());
 			}
 			List<Object> arrList = new ArrayList<>();
 			arrList.add(times);
