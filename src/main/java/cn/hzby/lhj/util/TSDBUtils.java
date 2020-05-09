@@ -25,7 +25,7 @@ public class TSDBUtils {
         // long now = System.currentTimeMillis();
         // 查询一小时的数据
         Query query = new Query();
-        System.out.println(downsample);
+//        System.out.println(downsample);
     	List<SubQuery> SubQuerys = new ArrayList<SubQuery>();
         for(String metric: metrics) {
         	SubQuerys.add(SubQuery.metric(metric)
@@ -37,8 +37,8 @@ public class TSDBUtils {
         query = Query.timeRange(startTime, endTime)
               .sub(SubQuerys)
               .build();
-        System.out.println(query.toJSON());
-        System.out.println(query.toString());
+//        System.out.println(query.toJSON());
+//        System.out.println(query.toString());
         /*Query query = Query.timeRange(endTime, startTime)
                 .sub(SubQuery.metric("cumulative_flow_rate_higher")
                 .aggregator(Aggregator.NONE).downsample(downsample)

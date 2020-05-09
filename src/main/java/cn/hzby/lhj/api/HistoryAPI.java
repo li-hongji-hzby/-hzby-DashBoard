@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,15 +35,21 @@ public class HistoryAPI {
 //        System.out.println(JSONMap);
         String metricsListStr = (String) JSONMap.get("metrics");
 		List<String> metricsList = JSONObject.parseArray(metricsListStr,String.class);
+		// 调用方法从TSDB获取数据
 		List<QueryResult> queryResult = tsdbUtils.getData(Long.valueOf(JSONMap.get("startTime")), Long.valueOf(JSONMap.get("endTime")), JSONMap.get("device"), JSONMap.get("downsample"), metricsList);
 //		System.out.println(queryResult);
 		Map<String, Object> result = new HashMap<String, Object>();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
-		for(QueryResult qs:queryResult) {
+		// 转换数据格式并重新封装
+		// 使用并发流处理数据，约提升50%效率
+		Stream<QueryResult> qsStream = queryResult.parallelStream();
+		qsStream.forEach( e -> {
+			// 日期格式化
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+//			System.out.println( Thread.currentThread().getName());
 //			System.out.println(qs.getDps());
-			Set<Entry<Long, Object>> entries = qs.getDps().entrySet();
 			List<String> times= new ArrayList<>();
 			List<Integer> datas= new ArrayList<>();
+			Set<Entry<Long, Object>> entries = e.getDps().entrySet();
 			for(Entry<Long, Object> entry : entries) {
 				times.add(sdf.format(Long.valueOf(entry.getKey().toString())*1000));
 				datas.add((Double.valueOf(entry.getValue().toString())).intValue());
@@ -50,14 +57,9 @@ public class HistoryAPI {
 			List<Object> arrList = new ArrayList<>();
 			arrList.add(times);
 			arrList.add(datas);
-			result.put(qs.getMetric(), arrList);
-		}
+			result.put(e.getMetric(), arrList);
+		});
 		return result;
 	}
 	
-	@RequestMapping(value="/test",method =RequestMethod.GET)
-	public List<QueryResult> test() throws Exception{
-		TSDBUtils tsdbUtils = new TSDBUtils();
-		return tsdbUtils.test();
-	}
 }
