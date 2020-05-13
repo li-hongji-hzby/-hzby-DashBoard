@@ -30,23 +30,18 @@ public class HistoryAPI {
 	@RequestMapping(value="/getHistory",method =RequestMethod.POST)
 	public Map<String, Object> getHistory(@RequestBody String getJSON) throws Exception{
 		TSDBUtils tsdbUtils = new TSDBUtils();
-		// now, now - 36000 *1000,"yuanyang_flowmeter_02", "10m-avg","cumulative_flow_rate_higher","cumulative_flow_rate_lower"
 		Map<String, String> JSONMap = JSON.parseObject(getJSON, new TypeReference<Map<String, String>>(){});
-//        System.out.println(JSONMap);
         String metricsListStr = (String) JSONMap.get("metrics");
 		List<String> metricsList = JSONObject.parseArray(metricsListStr,String.class);
 		// 调用方法从TSDB获取数据
 		List<QueryResult> queryResult = tsdbUtils.getData(Long.valueOf(JSONMap.get("startTime")), Long.valueOf(JSONMap.get("endTime")), JSONMap.get("device"), JSONMap.get("downsample"), metricsList);
-//		System.out.println(queryResult);
-		Map<String, Object> result = new HashMap<String, Object>();
+		Map<String, Object> result = new HashMap<String, Object>(16);
 		// 转换数据格式并重新封装
 		// 使用并发流处理数据，约提升50%效率
 		Stream<QueryResult> qsStream = queryResult.parallelStream();
 		qsStream.forEach( e -> {
-			// 日期格式化
+			// 日期格式化 
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
-//			System.out.println( Thread.currentThread().getName());
-//			System.out.println(qs.getDps());
 			List<String> times= new ArrayList<>();
 			List<Integer> datas= new ArrayList<>();
 			Set<Entry<Long, Object>> entries = e.getDps().entrySet();
