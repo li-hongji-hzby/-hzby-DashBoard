@@ -45,5 +45,6 @@
 		<table tableName="machine"></table>
 		<table tableName="machine_type"></table>
 		<table tableName="machine_attribute"></table> -->
+		<table tableName="log_msg"></table>
 	</context>
 </generatorConfiguration>

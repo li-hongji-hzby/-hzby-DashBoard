@@ -2,7 +2,6 @@ package cn.hzby.lhj.api;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +9,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,8 +22,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.aliyun.hitsdb.client.value.response.QueryResult;
 
+import cn.hzby.lhj.log.LogAspect;
 import cn.hzby.lhj.util.TSDBUtils;
 import cn.hzby.lhj.vo.HomeCardVo;
+
 
 /**
  * @version: V1.0
@@ -37,7 +40,10 @@ import cn.hzby.lhj.vo.HomeCardVo;
 @RequestMapping("/Home")
 public class HomeAPI {
 
+    private final Logger log = LoggerFactory.getLogger(LogAspect.class);
+    
 	// 获取 5分钟/n小时 数据点
+	@SuppressWarnings("finally")
 	@RequestMapping(value = "/getHoursAgo", method = RequestMethod.POST)
 	public Map<String,Object> getHoursAgo(@RequestBody String getJSON) throws Exception{
 		TSDBUtils tsdbUtils = new TSDBUtils();
@@ -55,12 +61,19 @@ public class HomeAPI {
 			HomeCardVo hdVO = new HomeCardVo();
 			Long key = entry.getKey();
 			double ele = ((BigDecimal) entry.getValue()).setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue(); // BigDecimal转小数点后两位Double 
-			double air = ((BigDecimal) airDatas.get(key)).setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
-			hdVO.setTimestamp(key);
-			hdVO.setElectricity(Double.valueOf(df.format(ele/100)));
-			hdVO.setAir(Double.valueOf(df.format(air/60)));
-			hdVO.setUnitCost(Double.valueOf(df2.format(ele/100/air)));
-			hcVoList.add(hdVO);
+			double air ;
+			try {
+				air = ((BigDecimal) airDatas.get(key)).setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
+				hdVO.setTimestamp(key);
+				hdVO.setElectricity(Double.valueOf(df.format(ele/100)));
+				hdVO.setAir(Double.valueOf(df.format(air/60)));
+				hdVO.setUnitCost(Double.valueOf(df2.format(ele/100/air)));
+				hcVoList.add(hdVO);
+			} catch (Exception e) {
+				throw e;
+			}finally {
+				continue;
+			}
 		}
 		HomeCardVo avgHcVo = new HomeCardVo();
 		// 流式编程取平均值
@@ -74,6 +87,7 @@ public class HomeAPI {
 	}
 
 	// 根据传入 metric 以及 downsample 获取数据
+	@SuppressWarnings("finally")
 	@RequestMapping(value = "/getMainChartData", method = RequestMethod.POST)
 	public List<HomeCardVo> getMainChartData(@RequestBody String getJSON)throws Exception{
 		TSDBUtils tsdbUtils = new TSDBUtils();
@@ -90,18 +104,20 @@ public class HomeAPI {
 		for(Entry<Long, Object> entry : entrys) {
 			HomeCardVo hdVO = new HomeCardVo();
 			Long key = entry.getKey();
-			double ele = ((BigDecimal) entry.getValue()).setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue(); // BigDecimal转小数点后两位Double
-			double air = 0.0;
+			double ele = ((BigDecimal) entry.getValue()).setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue(); // BigDecimal转小数点后两位Double 
+			double air ;
 			try {
 				air = ((BigDecimal) airDatas.get(key)).setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
+				hdVO.setTimestamp(key);
+				hdVO.setElectricity(Double.valueOf(df.format(ele/100)));
+				hdVO.setAir(Double.valueOf(df.format(air/60)));
+				hdVO.setUnitCost(Double.valueOf(df2.format(ele/100/air)));
+				hcVoList.add(hdVO);
 			} catch (Exception e) {
+				throw e;
+			}finally {
 				continue;
 			}
-			hdVO.setTimestamp(key);
-			hdVO.setElectricity(Double.valueOf(df.format(ele/100)));
-			hdVO.setAir(Double.valueOf(df.format(air/60)));
-			hdVO.setUnitCost(Double.valueOf(df2.format(ele/100/air)));
-			hcVoList.add(hdVO);
 		}
 		return hcVoList;
 	}

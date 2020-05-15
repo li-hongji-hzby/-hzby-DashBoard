@@ -8,6 +8,7 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.AfterThrowing;
@@ -17,10 +18,14 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+
+import cn.hzby.lhj.po.LogMsgWithBLOBs;
+import cn.hzby.lhj.service.LogMsgService;
 
 
 /**
@@ -32,6 +37,9 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 @Aspect
 @Component
 public class LogAspect {
+	
+	@Autowired
+	private LogMsgService logMsgService;
 
     private final Logger log = LoggerFactory.getLogger(LogAspect.class);
 	//设置切入点：这里直接拦截被@RestController注解的类
@@ -59,7 +67,6 @@ public class LogAspect {
         log.info("请求方法：{}, 请求参数: {}", methodName, Arrays.toString(args));
         //可能在反向代理请求进来时，获取的IP存在不正确行 这里直接摘抄一段来自网上获取ip的代码
         log.info("请求ip：{}", getIpAddr(requestAttr.getRequest()));
-    			
 		Signature signature = joinPoint.getSignature();
 		if(!(signature instanceof MethodSignature)) {
 			throw new IllegalArgumentException("暂不支持非方法注解");
@@ -87,9 +94,18 @@ public class LogAspect {
 	 * 指定拦截器规则；也可直接使用within(@org.springframework.web.bind.annotation.RestController *)
 	 * 这样简单点 可以通用
 	 * @param 异常对象
+	 * @throws Exception 
 	 */
 	@AfterThrowing(pointcut="pointcut()",throwing="e")
-	public void afterThrowable(Throwable e) {
+	public void afterThrowable(JoinPoint  joinPoint,Throwable e) throws Exception {
+		LogMsgWithBLOBs logMsg = new LogMsgWithBLOBs();
+		ServletRequestAttributes requestAttr = (ServletRequestAttributes)RequestContextHolder.currentRequestAttributes();
+		logMsg.setTime((int)System.currentTimeMillis());
+		logMsg.setIp(getIpAddr(requestAttr.getRequest()));
+		logMsg.setMethodName(joinPoint.getSignature().getName());
+		logMsg.setParam(Arrays.toString(joinPoint.getArgs()));
+		logMsg.setMsg(e.toString());
+		logMsgService.save(logMsg);
 //		log.error("切面发生了异常：", e);
 		//这里可以做个统一异常处理
 		//自定义一个异常 包装后排除
