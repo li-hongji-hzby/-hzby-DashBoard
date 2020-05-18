@@ -100,7 +100,7 @@ public class LogAspect {
 	public void afterThrowable(JoinPoint  joinPoint,Throwable e) throws Exception {
 		LogMsgWithBLOBs logMsg = new LogMsgWithBLOBs();
 		ServletRequestAttributes requestAttr = (ServletRequestAttributes)RequestContextHolder.currentRequestAttributes();
-		logMsg.setTime((int)System.currentTimeMillis());
+		logMsg.setTime(System.currentTimeMillis()/1000);
 		logMsg.setIp(getIpAddr(requestAttr.getRequest()));
 		logMsg.setMethodName(joinPoint.getSignature().getName());
 		logMsg.setParam(Arrays.toString(joinPoint.getArgs()));

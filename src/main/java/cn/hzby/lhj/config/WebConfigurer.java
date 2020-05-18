@@ -1,6 +1,5 @@
 package cn.hzby.lhj.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -11,7 +10,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupp
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import cn.hzby.lhj.filter.CorsFilter;
-import cn.hzby.lhj.interceptor.LoginInterceptor;
 
 
 @Configuration
@@ -19,8 +17,6 @@ import cn.hzby.lhj.interceptor.LoginInterceptor;
 public class WebConfigurer implements WebMvcConfigurer{
 	
 	
-    @Autowired
-    private LoginInterceptor loginInterceptor;
   
     // 这个方法是用来配置静态资源的，比如html，js，css，等等
 	@Override

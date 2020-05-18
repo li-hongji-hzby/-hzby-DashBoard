@@ -2,7 +2,6 @@ package cn.hzby.lhj.api;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +17,6 @@ import com.aliyun.hitsdb.client.value.response.LastDataValue;
 import cn.hzby.lhj.service.RealtimeAirCompressorService;
 import cn.hzby.lhj.service.RealtimeDryerService;
 import cn.hzby.lhj.service.RealtimeFlowMeterService;
-import cn.hzby.lhj.service.RealtimeOverviewService;
 import cn.hzby.lhj.util.TSDBUtils;
 
 @CrossOrigin

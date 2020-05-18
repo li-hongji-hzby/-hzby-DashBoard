@@ -9,8 +9,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,7 +20,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.aliyun.hitsdb.client.value.response.QueryResult;
 
-import cn.hzby.lhj.log.LogAspect;
 import cn.hzby.lhj.util.TSDBUtils;
 import cn.hzby.lhj.vo.HomeCardVo;
 
@@ -40,7 +37,6 @@ import cn.hzby.lhj.vo.HomeCardVo;
 @RequestMapping("/Home")
 public class HomeAPI {
 
-    private final Logger log = LoggerFactory.getLogger(LogAspect.class);
     
 	// 获取 5分钟/n小时 数据点
 	@SuppressWarnings("finally")
@@ -61,9 +57,8 @@ public class HomeAPI {
 			HomeCardVo hdVO = new HomeCardVo();
 			Long key = entry.getKey();
 			double ele = ((BigDecimal) entry.getValue()).setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue(); // BigDecimal转小数点后两位Double 
-			double air ;
 			try {
-				air = ((BigDecimal) airDatas.get(key)).setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
+				double air = ((BigDecimal) airDatas.get(key)).setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
 				hdVO.setTimestamp(key);
 				hdVO.setElectricity(Double.valueOf(df.format(ele/100)));
 				hdVO.setAir(Double.valueOf(df.format(air/60)));
@@ -105,9 +100,8 @@ public class HomeAPI {
 			HomeCardVo hdVO = new HomeCardVo();
 			Long key = entry.getKey();
 			double ele = ((BigDecimal) entry.getValue()).setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue(); // BigDecimal转小数点后两位Double 
-			double air ;
 			try {
-				air = ((BigDecimal) airDatas.get(key)).setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
+				double air = ((BigDecimal) airDatas.get(key)).setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
 				hdVO.setTimestamp(key);
 				hdVO.setElectricity(Double.valueOf(df.format(ele/100)));
 				hdVO.setAir(Double.valueOf(df.format(air/60)));

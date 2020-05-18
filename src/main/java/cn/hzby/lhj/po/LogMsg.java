@@ -3,7 +3,7 @@ package cn.hzby.lhj.po;
 public class LogMsg {
     private Integer id;
 
-    private Integer time;
+    private Long time;
 
     private String methodName;
 
@@ -17,11 +17,11 @@ public class LogMsg {
         this.id = id;
     }
 
-    public Integer getTime() {
+    public Long getTime() {
         return time;
     }
 
-    public void setTime(Integer time) {
+    public void setTime(Long time) {
         this.time = time;
     }
 

@@ -3,7 +3,7 @@
 <mapper namespace="cn.hzby.lhj.mapper.LogMsgMapper" >
   <resultMap id="BaseResultMap" type="cn.hzby.lhj.po.LogMsg" >
     <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="time" property="time" jdbcType="INTEGER" />
+    <result column="time" property="time" jdbcType="BIGINT" />
     <result column="method_name" property="methodName" jdbcType="VARCHAR" />
     <result column="ip" property="ip" jdbcType="VARCHAR" />
   </resultMap>
@@ -127,7 +127,7 @@
     insert into log_msg (id, time, method_name, 
       ip, msg, param
       )
-    values (#{id,jdbcType=INTEGER}, #{time,jdbcType=INTEGER}, #{methodName,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=INTEGER}, #{time,jdbcType=BIGINT}, #{methodName,jdbcType=VARCHAR}, 
       #{ip,jdbcType=VARCHAR}, #{msg,jdbcType=LONGVARCHAR}, #{param,jdbcType=LONGVARCHAR}
       )
   </insert>
@@ -158,7 +158,7 @@
         #{id,jdbcType=INTEGER},
       </if>
       <if test="time != null" >
-        #{time,jdbcType=INTEGER},
+        #{time,jdbcType=BIGINT},
       </if>
       <if test="methodName != null" >
         #{methodName,jdbcType=VARCHAR},
@@ -187,7 +187,7 @@
         id = #{record.id,jdbcType=INTEGER},
       </if>
       <if test="record.time != null" >
-        time = #{record.time,jdbcType=INTEGER},
+        time = #{record.time,jdbcType=BIGINT},
       </if>
       <if test="record.methodName != null" >
         method_name = #{record.methodName,jdbcType=VARCHAR},
@@ -209,7 +209,7 @@
   <update id="updateByExampleWithBLOBs" parameterType="map" >
     update log_msg
     set id = #{record.id,jdbcType=INTEGER},
-      time = #{record.time,jdbcType=INTEGER},
+      time = #{record.time,jdbcType=BIGINT},
       method_name = #{record.methodName,jdbcType=VARCHAR},
       ip = #{record.ip,jdbcType=VARCHAR},
       msg = #{record.msg,jdbcType=LONGVARCHAR},
@@ -221,7 +221,7 @@
   <update id="updateByExample" parameterType="map" >
     update log_msg
     set id = #{record.id,jdbcType=INTEGER},
-      time = #{record.time,jdbcType=INTEGER},
+      time = #{record.time,jdbcType=BIGINT},
       method_name = #{record.methodName,jdbcType=VARCHAR},
       ip = #{record.ip,jdbcType=VARCHAR}
     <if test="_parameter != null" >
@@ -232,7 +232,7 @@
     update log_msg
     <set >
       <if test="time != null" >
-        time = #{time,jdbcType=INTEGER},
+        time = #{time,jdbcType=BIGINT},
       </if>
       <if test="methodName != null" >
         method_name = #{methodName,jdbcType=VARCHAR},
@@ -251,7 +251,7 @@
   </update>
   <update id="updateByPrimaryKeyWithBLOBs" parameterType="cn.hzby.lhj.po.LogMsgWithBLOBs" >
     update log_msg
-    set time = #{time,jdbcType=INTEGER},
+    set time = #{time,jdbcType=BIGINT},
       method_name = #{methodName,jdbcType=VARCHAR},
       ip = #{ip,jdbcType=VARCHAR},
       msg = #{msg,jdbcType=LONGVARCHAR},
@@ -260,7 +260,7 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="cn.hzby.lhj.po.LogMsg" >
     update log_msg
-    set time = #{time,jdbcType=INTEGER},
+    set time = #{time,jdbcType=BIGINT},
       method_name = #{methodName,jdbcType=VARCHAR},
       ip = #{ip,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
