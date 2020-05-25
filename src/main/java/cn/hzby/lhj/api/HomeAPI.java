@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.annotation.Resource;
+
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +22,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.aliyun.hitsdb.client.value.response.QueryResult;
 
+import cn.hzby.lhj.util.RedisUtil;
 import cn.hzby.lhj.util.TSDBUtils;
 import cn.hzby.lhj.vo.HomeCardVo;
 
@@ -37,7 +40,9 @@ import cn.hzby.lhj.vo.HomeCardVo;
 @RequestMapping("/Home")
 public class HomeAPI {
 
-    
+    @Resource
+    private RedisUtil redisUtil;
+
 	// 获取 5分钟/n小时 数据点
 	@SuppressWarnings("finally")
 	@RequestMapping(value = "/getHoursAgo", method = RequestMethod.POST)
@@ -81,15 +86,28 @@ public class HomeAPI {
 		return result;
 	}
 
-	// 根据传入 metric 以及 downsample 获取数据
-	@SuppressWarnings("finally")
-	@RequestMapping(value = "/getMainChartData", method = RequestMethod.POST)
-	public List<HomeCardVo> getMainChartData(@RequestBody String getJSON)throws Exception{
+	// 获取月数据
+	@RequestMapping(value = "/getMonthsData", method = RequestMethod.GET)
+	public String getMonthsData()throws Exception{
+		return redisUtil.get("MonthsData").toString();
+	}
+
+	// 获取数据
+	@RequestMapping(value = "/getDaysData", method = RequestMethod.GET)
+	public String getDaysData()throws Exception{
+		return redisUtil.get("DaysData").toString();
+	}
+
+	// 获取日数据
+	@RequestMapping(value = "/getHoursData", method = RequestMethod.GET)
+	public String getHoursData()throws Exception{
+		return redisUtil.get("HoursData").toString();
+	}
+
+    @SuppressWarnings("finally")
+	public static List<HomeCardVo> getMainChartData(Long timestamp,String downsample,String... metrics )throws Exception{
 		TSDBUtils tsdbUtils = new TSDBUtils();
-		Map<String, String> JSONMap = JSON.parseObject(getJSON, new TypeReference<Map<String, String>>(){});
-        String metricsListStr = (String) JSONMap.get("metrics");
-		List<String> metrics =  JSONObject.parseArray(metricsListStr,String.class);
-		List<QueryResult> qs = tsdbUtils.getByTimeAndDownSample(Long.valueOf(JSONMap.get("timestamp")), metrics,JSONMap.get("downsample"));
+		List<QueryResult> qs = tsdbUtils.getByTimeAndDownSample(timestamp,downsample,metrics);
 		Set<Entry<Long, Object>> entrys = qs.get(0).getDps().entrySet();
 		Map<Long, Object> airDatas = new HashMap<Long,Object>(16);
 		airDatas = qs.get(1).getDps();
@@ -115,4 +133,5 @@ public class HomeAPI {
 		}
 		return hcVoList;
 	}
+	
 }

@@ -1,7 +1,13 @@
 package cn.hzby.lhj.vo;
 
-public class HomeCardVo {
+import java.io.Serializable;
+
+public class HomeCardVo implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private long timestamp;
 	private double electricity;
 	private double air;

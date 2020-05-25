@@ -1,5 +1,6 @@
 package cn.hzby.lhj.api;
 
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,6 +40,7 @@ public class HistoryAPI {
 		// 转换数据格式并重新封装
 		// 使用并发流处理数据，约提升50%效率
 		Stream<QueryResult> qsStream = queryResult.parallelStream();
+		Long start = System.currentTimeMillis();
 		qsStream.forEach( e -> {
 			// 日期格式化 
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
@@ -54,6 +56,8 @@ public class HistoryAPI {
 			arrList.add(datas);
 			result.put(e.getMetric(), arrList);
 		});
+		Long end = System.currentTimeMillis();
+		System.out.println(end - start);
 		return result;
 	}
 	

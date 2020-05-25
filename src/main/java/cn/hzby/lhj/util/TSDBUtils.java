@@ -87,7 +87,7 @@ public class TSDBUtils {
     }
 	
 	
-	public List<QueryResult> getByTimeAndDownSample(Long timestamp,List<String> metrics,String downsample) throws IOException {
+	public List<QueryResult> getByTimeAndDownSample(Long timestamp,String downsample,String... metrics) throws IOException {
         // 创建 TSDB 对象
         TSDBConfig config = TSDBConfig.address(address, port).config();
         TSDB tsdb = TSDBClientFactory.connect(config);
