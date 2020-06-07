@@ -25,7 +25,7 @@ public class CorsFilter implements Filter {
 		
 		HttpServletResponse httpServletResponse = (HttpServletResponse) response; 
 		// 如果不是80端口,需要将端口加上,如果是集群,则用Nginx的地址,同理不是80端口要加上端口
-		String []  allowDomain= {"http://localhost:3000","http://127.0.0.1:3000","http://139.196.28.123:3000","http://localhost:3001","http://2s7413325f.zicp.vip"};
+		String []  allowDomain= {"http://localhost:3000","http://127.0.0.1:3000","http://139.196.28.123:3000","http://localhost:3001","http://2s7413325f.zicp.vip","http://plant.hzby.tech:3000","https://plant.hzby.tech:3000",};
 		Set<String> allowedOrigins= new HashSet<String>(Arrays.asList(allowDomain));
 		String originHeader=((HttpServletRequest) request).getHeader("Origin");
 		if (allowedOrigins.contains(originHeader)){

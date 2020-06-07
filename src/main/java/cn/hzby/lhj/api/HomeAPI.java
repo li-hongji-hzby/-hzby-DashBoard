@@ -54,7 +54,7 @@ public class HomeAPI {
 		List<QueryResult> qs = tsdbUtils.get5MinAvg(Integer.valueOf(JSONMap.get("hour")), metricsList);
 		Set<Entry<Long, Object>> entrys = qs.get(0).getDps().entrySet();
 		Map<Long, Object> airDatas = new HashMap<Long,Object>(16);
-		airDatas = qs.get(1).getDps();
+		airDatas = qs.get(0).getDps();
 		List<HomeCardVo> hcVoList = new ArrayList<HomeCardVo>();
 		DecimalFormat df = new DecimalFormat("#.00");
 		DecimalFormat df2 = new DecimalFormat("#.0000");
@@ -86,33 +86,43 @@ public class HomeAPI {
 		return result;
 	}
 
-	// 获取月数据
-	@RequestMapping(value = "/getMonthsData", method = RequestMethod.GET)
-	public String getMonthsData()throws Exception{
-		return redisUtil.get("MonthsData").toString();
+	// 获取年数据
+	@RequestMapping(value = "/getMonthsData", method = RequestMethod.POST)
+	public String getMonthsData(@RequestBody JSONObject jsonObj)throws Exception{
+		String project = (String)((Map<?, ?>)jsonObj.get("project")).get("projectNameEn");
+		return redisUtil.hmget(project).get("MonthsData").toString();
 	}
 
-	// 获取数据
-	@RequestMapping(value = "/getDaysData", method = RequestMethod.GET)
-	public String getDaysData()throws Exception{
-		return redisUtil.get("DaysData").toString();
+	// 获取月数据
+	@RequestMapping(value = "/getDaysData", method = RequestMethod.POST)
+	public String getDaysData(@RequestBody JSONObject jsonObj)throws Exception{
+		String project = (String)((Map<?, ?>)jsonObj.get("project")).get("projectNameEn");
+		return redisUtil.hmget(project).get("DaysData").toString();
 	}
 
 	// 获取日数据
-	@RequestMapping(value = "/getHoursData", method = RequestMethod.GET)
-	public String getHoursData()throws Exception{
-		return redisUtil.get("HoursData").toString();
+	@RequestMapping(value = "/getHoursData", method = RequestMethod.POST)
+	public String getHoursData(@RequestBody JSONObject jsonObj)throws Exception{
+		String project = (String)((Map<?, ?>)jsonObj.get("project")).get("projectNameEn");
+		return redisUtil.hmget(project).get("HoursData").toString();
 	}
 
+	// 获取概览数据
+	@RequestMapping(value = "/getSummaryData", method = RequestMethod.POST)
+	public String getSummary(@RequestBody JSONObject jsonObj)throws Exception{
+		String project = (String)((Map<?, ?>)jsonObj.get("project")).get("projectNameEn");
+		return redisUtil.hmget(project).get("summary").toString();
+	}
+	
     @SuppressWarnings("finally")
-	public static List<HomeCardVo> getMainChartData(Long timestamp,String downsample,String... metrics )throws Exception{
+	public static List<HomeCardVo> getMainChartData(Long timestamp,String downsample,String porject,List<String> metrics )throws Exception{
 		TSDBUtils tsdbUtils = new TSDBUtils();
-		List<QueryResult> qs = tsdbUtils.getByTimeAndDownSample(timestamp,downsample,metrics);
+		List<QueryResult> qs = tsdbUtils.getByTimeAndDownSample(timestamp,downsample,porject,metrics);
 		Set<Entry<Long, Object>> entrys = qs.get(0).getDps().entrySet();
 		Map<Long, Object> airDatas = new HashMap<Long,Object>(16);
 		airDatas = qs.get(1).getDps();
-		List<HomeCardVo> hcVoList = new ArrayList<HomeCardVo>();
-		DecimalFormat df = new DecimalFormat("#.00");
+		List<HomeCardVo> hcVoList = new ArrayList<>();
+		DecimalFormat df = new DecimalFormat("#");
 		DecimalFormat df2 = new DecimalFormat("#.0000");
 		for(Entry<Long, Object> entry : entrys) {
 			HomeCardVo hdVO = new HomeCardVo();
@@ -121,9 +131,9 @@ public class HomeAPI {
 			try {
 				double air = ((BigDecimal) airDatas.get(key)).setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
 				hdVO.setTimestamp(key);
-				hdVO.setElectricity(Double.valueOf(df.format(ele/100)));
-				hdVO.setAir(Double.valueOf(df.format(air/60)));
-				hdVO.setUnitCost(Double.valueOf(df2.format(ele/100/air)));
+				hdVO.setElectricity(Double.valueOf(df.format(ele)));
+				hdVO.setAir(Double.valueOf(df.format(air)));
+				hdVO.setUnitCost(Double.valueOf(df2.format(ele/(air*60))));
 				hcVoList.add(hdVO);
 			} catch (Exception e) {
 				throw e;

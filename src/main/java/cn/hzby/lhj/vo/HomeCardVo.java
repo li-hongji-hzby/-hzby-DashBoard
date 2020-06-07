@@ -2,6 +2,10 @@ package cn.hzby.lhj.vo;
 
 import java.io.Serializable;
 
+import com.alibaba.fastjson.annotation.JSONType;
+
+
+@JSONType(orders={"timestamp","electricity","air","unitCost"})
 public class HomeCardVo implements Serializable{
 	
 	/**

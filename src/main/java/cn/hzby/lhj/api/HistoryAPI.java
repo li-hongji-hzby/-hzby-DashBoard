@@ -16,9 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.TypeReference;
 import com.aliyun.hitsdb.client.value.response.QueryResult;
 
 import cn.hzby.lhj.util.TSDBUtils;
@@ -28,19 +26,35 @@ import cn.hzby.lhj.util.TSDBUtils;
 @CrossOrigin
 public class HistoryAPI {
 	
+
+	/**
+	* @version: V2.0
+	* @author:  LHJ
+	* @methodsName: getHistory
+	* @description: 获取历史数据页数据
+	* @param: JSONObject jsonObj
+	* @return: Map<String, Object>
+	* @throws: 
+	*/
 	@RequestMapping(value="/getHistory",method =RequestMethod.POST)
-	public Map<String, Object> getHistory(@RequestBody String getJSON) throws Exception{
+	public Map<String, Object> test(@RequestBody JSONObject jsonObj) throws Exception{
 		TSDBUtils tsdbUtils = new TSDBUtils();
-		Map<String, String> JSONMap = JSON.parseObject(getJSON, new TypeReference<Map<String, String>>(){});
-        String metricsListStr = (String) JSONMap.get("metrics");
-		List<String> metricsList = JSONObject.parseArray(metricsListStr,String.class);
+		List<String> metricsList = new ArrayList<String>();
+		@SuppressWarnings("unchecked")
+		Map<String, Object> metricMap = (Map<String, Object>) jsonObj.get("metrics");
+		for (Entry<?, ?> metricEntry : metricMap.entrySet()) {
+			metricsList.add((String)metricEntry.getKey());
+		}
 		// 调用方法从TSDB获取数据
-		List<QueryResult> queryResult = tsdbUtils.getData(Long.valueOf(JSONMap.get("startTime")), Long.valueOf(JSONMap.get("endTime")), JSONMap.get("device"), JSONMap.get("downsample"), metricsList);
+		List<QueryResult> queryResult = tsdbUtils.getData(Long.valueOf((Integer)jsonObj.get("startTime"))
+				, Long.valueOf((Integer) jsonObj.get("endTime"))
+				, (String) jsonObj.get("device")
+				, (String)jsonObj.get("downsample")
+				, metricsList);
 		Map<String, Object> result = new HashMap<String, Object>(16);
+		Stream<QueryResult> qsStream = queryResult.parallelStream();
 		// 转换数据格式并重新封装
 		// 使用并发流处理数据，约提升50%效率
-		Stream<QueryResult> qsStream = queryResult.parallelStream();
-		Long start = System.currentTimeMillis();
 		qsStream.forEach( e -> {
 			// 日期格式化 
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
@@ -54,11 +68,9 @@ public class HistoryAPI {
 			List<Object> arrList = new ArrayList<>();
 			arrList.add(times);
 			arrList.add(datas);
-			result.put(e.getMetric(), arrList);
+			result.put((String) metricMap.get(e.getMetric()), arrList);
 		});
-		Long end = System.currentTimeMillis();
-		System.out.println(end - start);
+		System.out.println(result);
 		return result;
 	}
-	
 }

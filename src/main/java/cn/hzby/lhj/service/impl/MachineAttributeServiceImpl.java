@@ -1,5 +1,6 @@
 package cn.hzby.lhj.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,4 +40,15 @@ public class MachineAttributeServiceImpl implements MachineAttributeService {
 		return machineAttributeMapper.deleteByPrimaryKey(id);
 	}
 
+	// 根据ID批量查询属性
+	@Override
+	public List<MachineAttribute> listByIds(List<Integer> ids) throws Exception {
+		List<MachineAttribute>  attributeList = new ArrayList<MachineAttribute>();
+		for(Integer id : ids) {
+			attributeList.add(getById(id));
+		}
+		return attributeList;
+	}
+
+	
 }

@@ -19,18 +19,18 @@
 		</javaTypeResolver>
 
 		<javaModelGenerator targetPackage="cn.hzby.lhj.po"
-			targetProject=".\src\main\java">
+			targetProject="./src/main/java">
 			<property name="enableSubPackages" value="true" />
 			<property name="trimStrings" value="true" />
 		</javaModelGenerator>
 
 		<sqlMapGenerator targetPackage="mapxml"
-			targetProject=".\src\main\resources">
+			targetProject="./src/main/resources">
 			<property name="enableSubPackages" value="true" />
 		</sqlMapGenerator>
 
 		<javaClientGenerator type="XMLMAPPER"
-			targetPackage="cn.hzby.lhj.mapper" targetProject=".\src\main\java">
+			targetPackage="cn.hzby.lhj.mapper" targetProject="./src/main/java">
 			<property name="enableSubPackages" value="true" />
 		</javaClientGenerator>
 		<!-- <table tableName="realtime_air_compressor"></table>
@@ -44,7 +44,14 @@
 		<table tableName="realtime_overview"></table>
 		<table tableName="machine"></table>
 		<table tableName="machine_type"></table>
-		<table tableName="machine_attribute"></table> -->
+		<table tableName="machine_attribute"></table> 
 		<table tableName="log_msg"></table>
+		<table tableName="project"></table>
+		<table tableName="project_history_machine"></table>
+		<table tableName="machine_status"></table>
+		<table tableName="project_realtime_machine"></table>
+		<table tableName="project_realtime_summary"></table>
+		<table tableName="project_main_summary"></table>-->
+		<table tableName="project_main_history"></table>
 	</context>
 </generatorConfiguration>

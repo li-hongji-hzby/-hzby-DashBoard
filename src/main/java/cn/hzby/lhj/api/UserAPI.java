@@ -15,6 +15,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
 import cn.hzby.lhj.po.User;
+import cn.hzby.lhj.service.ProjectService;
 import cn.hzby.lhj.service.UserService;
 import cn.hzby.lhj.util.EncryptUtil;
 import cn.hzby.lhj.util.JWTUtil;
@@ -26,6 +27,9 @@ public class UserAPI {
 
 	@Autowired
 	private UserService userSrvice;
+
+	@Autowired
+	private ProjectService projectService; 
 	
 	@RequestMapping(value="/register",method=RequestMethod.POST)
 	public Map<String, String> register(@RequestParam("username")String username,@RequestParam("password")String password) throws Exception{
@@ -56,10 +60,11 @@ public class UserAPI {
 			if(user!=null) {
 				if(user.getPassword().equals(EncryptUtil.getSHA256Str(password)) && user.getStatus()) {
 					String JWTString = JWTUtil.setJWT(user.getUsername(), user.getUsername(), 1000*60*2880);
-					Map<String, String> msg = new HashMap<String, String>();
+					Map<String, Object> msg = new HashMap<String, Object>();
 					msg.put("user", username);
 					msg.put("jwt", JWTString);
-					
+					msg.put("pageConfig", projectService.getProjectConfigByUser(username));
+					msg.put("project", projectService.getByUsername(username));
 					result.put("msg", JSON.toJSONString(msg));
 					result.put("code", "1");
 				}else if(!user.getStatus()){

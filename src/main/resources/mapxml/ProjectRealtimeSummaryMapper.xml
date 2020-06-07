@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.hzby.lhj.mapper.ProjectRealtimeSummaryMapper" >
+  <resultMap id="BaseResultMap" type="cn.hzby.lhj.po.ProjectRealtimeSummary" >
+    <id column="project_name_en" property="projectNameEn" jdbcType="VARCHAR" />
+    <id column="data_name" property="dataName" jdbcType="VARCHAR" />
+    <result column="is_show" property="isShow" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="cn.hzby.lhj.po.ProjectRealtimeSummaryWithBLOBs" extends="BaseResultMap" >
+    <result column="machine_list" property="machineList" jdbcType="LONGVARCHAR" />
+    <result column="attribute" property="attribute" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    project_name_en, data_name, is_show
+  </sql>
+  <sql id="Blob_Column_List" >
+    machine_list, attribute
+  </sql>
+  <select id="selectByExampleWithBLOBs" resultMap="ResultMapWithBLOBs" parameterType="cn.hzby.lhj.po.ProjectRealtimeSummaryExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from project_realtime_summary
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="cn.hzby.lhj.po.ProjectRealtimeSummaryExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from project_realtime_summary
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="cn.hzby.lhj.po.ProjectRealtimeSummaryKey" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from project_realtime_summary
+    where project_name_en = #{projectNameEn,jdbcType=VARCHAR}
+      and data_name = #{dataName,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="cn.hzby.lhj.po.ProjectRealtimeSummaryKey" >
+    delete from project_realtime_summary
+    where project_name_en = #{projectNameEn,jdbcType=VARCHAR}
+      and data_name = #{dataName,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="cn.hzby.lhj.po.ProjectRealtimeSummaryExample" >
+    delete from project_realtime_summary
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="cn.hzby.lhj.po.ProjectRealtimeSummaryWithBLOBs" >
+    insert into project_realtime_summary (project_name_en, data_name, is_show, 
+      machine_list, attribute)
+    values (#{projectNameEn,jdbcType=VARCHAR}, #{dataName,jdbcType=VARCHAR}, #{isShow,jdbcType=INTEGER}, 
+      #{machineList,jdbcType=LONGVARCHAR}, #{attribute,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.hzby.lhj.po.ProjectRealtimeSummaryWithBLOBs" >
+    insert into project_realtime_summary
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="projectNameEn != null" >
+        project_name_en,
+      </if>
+      <if test="dataName != null" >
+        data_name,
+      </if>
+      <if test="isShow != null" >
+        is_show,
+      </if>
+      <if test="machineList != null" >
+        machine_list,
+      </if>
+      <if test="attribute != null" >
+        attribute,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="projectNameEn != null" >
+        #{projectNameEn,jdbcType=VARCHAR},
+      </if>
+      <if test="dataName != null" >
+        #{dataName,jdbcType=VARCHAR},
+      </if>
+      <if test="isShow != null" >
+        #{isShow,jdbcType=INTEGER},
+      </if>
+      <if test="machineList != null" >
+        #{machineList,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="attribute != null" >
+        #{attribute,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="cn.hzby.lhj.po.ProjectRealtimeSummaryExample" resultType="java.lang.Integer" >
+    select count(*) from project_realtime_summary
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update project_realtime_summary
+    <set >
+      <if test="record.projectNameEn != null" >
+        project_name_en = #{record.projectNameEn,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dataName != null" >
+        data_name = #{record.dataName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isShow != null" >
+        is_show = #{record.isShow,jdbcType=INTEGER},
+      </if>
+      <if test="record.machineList != null" >
+        machine_list = #{record.machineList,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="record.attribute != null" >
+        attribute = #{record.attribute,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map" >
+    update project_realtime_summary
+    set project_name_en = #{record.projectNameEn,jdbcType=VARCHAR},
+      data_name = #{record.dataName,jdbcType=VARCHAR},
+      is_show = #{record.isShow,jdbcType=INTEGER},
+      machine_list = #{record.machineList,jdbcType=LONGVARCHAR},
+      attribute = #{record.attribute,jdbcType=LONGVARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update project_realtime_summary
+    set project_name_en = #{record.projectNameEn,jdbcType=VARCHAR},
+      data_name = #{record.dataName,jdbcType=VARCHAR},
+      is_show = #{record.isShow,jdbcType=INTEGER}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.hzby.lhj.po.ProjectRealtimeSummaryWithBLOBs" >
+    update project_realtime_summary
+    <set >
+      <if test="isShow != null" >
+        is_show = #{isShow,jdbcType=INTEGER},
+      </if>
+      <if test="machineList != null" >
+        machine_list = #{machineList,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="attribute != null" >
+        attribute = #{attribute,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where project_name_en = #{projectNameEn,jdbcType=VARCHAR}
+      and data_name = #{dataName,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="cn.hzby.lhj.po.ProjectRealtimeSummaryWithBLOBs" >
+    update project_realtime_summary
+    set is_show = #{isShow,jdbcType=INTEGER},
+      machine_list = #{machineList,jdbcType=LONGVARCHAR},
+      attribute = #{attribute,jdbcType=LONGVARCHAR}
+    where project_name_en = #{projectNameEn,jdbcType=VARCHAR}
+      and data_name = #{dataName,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.hzby.lhj.po.ProjectRealtimeSummary" >
+    update project_realtime_summary
+    set is_show = #{isShow,jdbcType=INTEGER}
+    where project_name_en = #{projectNameEn,jdbcType=VARCHAR}
+      and data_name = #{dataName,jdbcType=VARCHAR}
+  </update>
+</mapper>
