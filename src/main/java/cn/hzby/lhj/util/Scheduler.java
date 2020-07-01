@@ -4,7 +4,6 @@ package cn.hzby.lhj.util;
 
 
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +19,6 @@ import com.alibaba.fastjson.JSON;
 import cn.hzby.lhj.api.HomeAPI;
 import cn.hzby.lhj.po.ProjectMainHistory;
 import cn.hzby.lhj.po.ProjectMainSummary;
-import cn.hzby.lhj.po.ProjectRealtimeMachine;
 import cn.hzby.lhj.service.MachineAttributeService;
 import cn.hzby.lhj.service.ProjectMainHistoryService;
 import cn.hzby.lhj.service.ProjectMainSummaryService;
@@ -49,6 +47,7 @@ public class Scheduler {
 	public void testTasks1() throws Exception {
 		List<ProjectMainSummary> summaryList = projectMainSummaryService.listAll();
 		Map<String, Map<String, Double>> result =  TSDBUtils.getMainSummary(summaryList);
+//		System.out.println(Thread.currentThread().getName());
 		result.keySet().forEach( e -> {
 			if(result.get(e).get("flowrate")>0 && result.get(e).get("P")>0) {
 				redisUtil.hmset(e, new HashMap<String,Object>() {{
