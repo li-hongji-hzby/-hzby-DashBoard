@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import javax.annotation.Resource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,6 +30,7 @@ import cn.hzby.lhj.po.ProjectRealtimeSummaryWithBLOBs;
 import cn.hzby.lhj.service.MachineStatusService;
 import cn.hzby.lhj.service.ProjectRealtimeMachineService;
 import cn.hzby.lhj.service.ProjectRealtimeSummaryService;
+import cn.hzby.lhj.util.RedisUtil;
 import cn.hzby.lhj.util.TSDBUtils;
 
 @CrossOrigin
@@ -42,7 +45,9 @@ public class RealTimeAPI {
 	private ProjectRealtimeMachineService projectRealtimeMachineService;
 	@Autowired
 	private ProjectRealtimeSummaryService projectRealtimeSummaryService;
-	
+
+    @Resource
+    private RedisUtil redisUtil;
 	
 //	@RequestMapping("/listRealTimeDatas")
 //	public Map<String, Object> listRealTimeDatas() throws Exception{
@@ -81,6 +86,7 @@ public class RealTimeAPI {
 		Map<?, ?> tableMsgMap = JSON.parseObject(JSON.toJSONString(jsonObj.get("tableMsg")),Map.class);
 		String project = (String)((Map<?, ?>)jsonObj.get("project")).get("projectNameEn");
 		Map<String,Object> resultMap = new LinkedHashMap<String, Object>(16);
+		long start = System.currentTimeMillis();
 		// 根据机器类型取出数据
 		for (Entry<?, ?> tableMsgEntry : tableMsgMap.entrySet()) {
 			// 取出属性存为List
@@ -96,9 +102,6 @@ public class RealTimeAPI {
 				List<LastDataValue> queryList = tsdbUtils.getLastMulti(attrList,(String)machineEntry.getValue(),project);
 				Map<String,Object> mechine = new LinkedHashMap<String, Object>(16);
 				mechine.put("machine", machineEntry.getKey());
-//				mechine.put("status", ((BigDecimal)queryList.stream().filter(g -> g.getMetric().equals("P")).findFirst().get().getValue()).doubleValue()>1?true : false);
-//				System.out.println(tsdbUtils.getLastOne("P","energy_meter_1:ZJG"));
-				mechine.put("status",true);
 				ProjectRealtimeMachineKey key = new ProjectRealtimeMachineKey();
 				key.setMachineNameEn((String)machineEntry.getValue());
 				key.setProjectNameEn(project);
@@ -110,12 +113,15 @@ public class RealTimeAPI {
 			}
 			resultMap.put((String)tableMsgEntry.getKey(), resList);
 		}
+		long end = System.currentTimeMillis();
+		System.out.println(end - start);
 		return resultMap;
 	}
 	
 	@SuppressWarnings("serial")
 	@RequestMapping(value = "/getRealtimeSummary",method = RequestMethod.POST)
 	public Map<String, Double> getRealtimeSummary(@RequestBody JSONObject jsonObj) throws Exception{
+		System.out.println(jsonObj);
 		Project project = JSON.parseObject(JSON.toJSONString(jsonObj.get("project")), Project.class);
 		List<Map<String, String>> queryMapList = new ArrayList<Map<String,String>>();
 		List<ProjectRealtimeSummaryWithBLOBs> summaryList = projectRealtimeSummaryService.getByProject((String) ((Map<?, ?>)jsonObj.get("project")).get("projectNameEn"));
@@ -135,6 +141,45 @@ public class RealTimeAPI {
 		Map<String,Double> resultMap = new HashMap<String, Double>();
 		summaryList.parallelStream().forEach(e -> resultMap.put(e.getDataName(), sumMap.get(e.getAttribute())));
 		resultMap.put("单耗", Double.valueOf(new DecimalFormat("#.00").format(resultMap.get("功率")/resultMap.get("流量"))));
+		return resultMap;
+	}
+
+	@SuppressWarnings("serial")
+	@RequestMapping(value = "/listRealTimeDatasCache",method = RequestMethod.POST)
+	public Map<String, Object> listRealTimeDatasCache(@RequestBody JSONObject jsonObj) throws Exception{
+		Map<?, ?> tableMsgMap = JSON.parseObject(JSON.toJSONString(jsonObj.get("tableMsg")),Map.class);
+		String project = (String)((Map<?, ?>)jsonObj.get("project")).get("projectNameEn");
+		Map<String,Object> resultMap = new LinkedHashMap<String, Object>(16);
+		long start = System.currentTimeMillis();
+		// 根据机器类型取出数据
+		for (Entry<?, ?> tableMsgEntry : tableMsgMap.entrySet()) {
+			// 取出属性存为List
+			List<String> attrList = new ArrayList<String>();
+			Map<?, ?> attrsMap = (JSONObject)(((JSONObject)tableMsgEntry.getValue()).get("attributes"));
+			for (Entry<?, ?> attrEntry : attrsMap.entrySet()) {
+				attrList.add((String)attrEntry.getValue());
+			}
+			Map<String, Object> machineMap = (JSONObject)(((JSONObject)tableMsgEntry.getValue()).get("machines"));
+			List<Object> resList =new ArrayList<Object>();
+			for (Entry<?, ?> machineEntry : machineMap.entrySet()) {
+				List<Object> machineAttrList =new ArrayList<Object>();
+				machineAttrList.add(machineEntry.getKey());
+				ProjectRealtimeMachineKey key = new ProjectRealtimeMachineKey();
+				key.setMachineNameEn((String)machineEntry.getValue());
+				key.setProjectNameEn(project);
+				MachineStatus machineStatus = machineStatusService.getById(Integer.valueOf(projectRealtimeMachineService.getById(key).getMachinePower()));
+				System.out.println(Double.valueOf(String.format("%f",redisUtil.hget(machineStatus.getMachineName(), machineStatus.getAttrribute()))));
+				machineAttrList.add(Double.valueOf(String.format("%f",redisUtil.hget(machineStatus.getMachineName(), machineStatus.getAttrribute())))> Double.valueOf(machineStatus.getMin()) ? true : false);
+				for(String str : attrList) {
+					machineAttrList.add(redisUtil.hget((String) machineEntry.getValue(), str));
+				}
+				resList.add(machineAttrList);
+			}
+			resultMap.put((String)tableMsgEntry.getKey(), resList);
+		}
+		long end = System.currentTimeMillis();
+		System.out.println(end - start);
+//		System.out.println(resultMap);
 		return resultMap;
 	}
 }

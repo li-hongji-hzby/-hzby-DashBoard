@@ -64,7 +64,6 @@ public class ProjectServiceImpl implements ProjectService {
 		Map<String,Object> result = new HashMap<String,Object>(16);
 		result.put("realtimePage", projectRealtimeMachineService.listByProjectIsshow(project.getProjectNameEn()));
 		result.put("historyPage", projectHistoryMachineService.listByProjectIsshow(project.getProjectNameEn()));
-		System.out.println(result);
 		return result;
 	}
 

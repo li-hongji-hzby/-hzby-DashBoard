@@ -20,7 +20,7 @@ public class ScheduledConfig{
 	@Bean
     public TaskScheduler taskScheduler() {
         ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
-        scheduler.setPoolSize(5);
+        scheduler.setPoolSize(20);
         return scheduler;
     }
 	
