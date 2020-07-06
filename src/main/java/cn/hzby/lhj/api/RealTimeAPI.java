@@ -33,6 +33,14 @@ import cn.hzby.lhj.service.ProjectRealtimeSummaryService;
 import cn.hzby.lhj.util.RedisUtil;
 import cn.hzby.lhj.util.TSDBUtils;
 
+/**
+ * @version: V1.0
+ * @author: LHJ
+ * @className: RealTime
+ * @packageName: api
+ * @description: 实时数据API
+ * @data: 2020-07-06 09:56
+ **/
 @CrossOrigin
 @RestController
 @RequestMapping("/RealTime")
@@ -48,39 +56,8 @@ public class RealTimeAPI {
 
     @Resource
     private RedisUtil redisUtil;
-	
-//	@RequestMapping("/listRealTimeDatas")
-//	public Map<String, Object> listRealTimeDatas() throws Exception{
-//		TSDBUtils tsdbUtils  = new TSDBUtils();
-//		Map<String, Object> realTimeDatas = new HashMap<String, Object>(); 
-//		long time = (long)System.currentTimeMillis()/1000;
-//		realTimeDatas.put("空压机", realtimeAirCompressorService.listAll());
-//		realTimeDatas.put("干燥机", realtimeDryerService.listAll());
-//		realTimeDatas.put("流量计", realtimeFlowMeterService.listAll());
-//		Map<String, Object> result = new HashMap<String, Object>(); 
-//		result.put("realTimeDatas", realTimeDatas);
-//		result.put("change", false);
-//		DecimalFormat df = new DecimalFormat("#.00");
-//		DecimalFormat df2 = new DecimalFormat("#.0000");
-//		List<LastDataValue> getFlowrate = tsdbUtils.getLastOne(time, "flowrate");
-//		double flowrate = ((BigDecimal) getFlowrate.get(0).getValue()).setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue()
-//				+((BigDecimal) getFlowrate.get(1).getValue()).setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue()
-//				+((BigDecimal) getFlowrate.get(2).getValue()).setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
-//		double ele = ((BigDecimal) tsdbUtils.getLastOne(time, "active_power").get(0).getValue()).setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
-//		JSONObject obj = new JSONObject();
-//		if(flowrate >0) {
-//			obj.put("流量",Double.valueOf(df.format(flowrate/60)));
-//			obj.put("功率",Double.valueOf(df.format(ele/100)));
-//			obj.put("压力",6.3);
-//			obj.put("单耗",Double.valueOf(df2.format(ele/100/flowrate)));
-//			result.put("change", true);
-//		}
-////		realtimeOverview.add();
-//		result.put("realtimeOverview", obj);
-//		return result;
-//	}
-	
 
+	// 获取实时数据页机器数据
 	@RequestMapping(value = "/listRealTimeDatas",method = RequestMethod.POST)
 	public Map<String, Object> listRealTimeDatas(@RequestBody JSONObject jsonObj) throws Exception{
 		Map<?, ?> tableMsgMap = JSON.parseObject(JSON.toJSONString(jsonObj.get("tableMsg")),Map.class);
@@ -118,6 +95,7 @@ public class RealTimeAPI {
 		return resultMap;
 	}
 	
+	// 获取实时数据页数据总和
 	@SuppressWarnings("serial")
 	@RequestMapping(value = "/getRealtimeSummary",method = RequestMethod.POST)
 	public Map<String, Double> getRealtimeSummary(@RequestBody JSONObject jsonObj) throws Exception{
@@ -144,6 +122,8 @@ public class RealTimeAPI {
 		return resultMap;
 	}
 
+
+	// 从缓存中获取实时数据页机器数据
 	@SuppressWarnings("serial")
 	@RequestMapping(value = "/listRealTimeDatasCache",method = RequestMethod.POST)
 	public Map<String, Object> listRealTimeDatasCache(@RequestBody JSONObject jsonObj) throws Exception{
@@ -168,8 +148,8 @@ public class RealTimeAPI {
 				key.setMachineNameEn((String)machineEntry.getValue());
 				key.setProjectNameEn(project);
 				MachineStatus machineStatus = machineStatusService.getById(Integer.valueOf(projectRealtimeMachineService.getById(key).getMachinePower()));
-				System.out.println(Double.valueOf(String.format("%f",redisUtil.hget(machineStatus.getMachineName(), machineStatus.getAttrribute()))));
-				machineAttrList.add(Double.valueOf(String.format("%f",redisUtil.hget(machineStatus.getMachineName(), machineStatus.getAttrribute())))> Double.valueOf(machineStatus.getMin()) ? true : false);
+//				System.out.println(Double.valueOf(String.format("%f",redisUtil.hget(machineStatus.getMachineName(), machineStatus.getAttrribute()))));
+				machineAttrList.add(Double.valueOf(String.format("%.2f",Double.valueOf(redisUtil.hget(machineStatus.getMachineName(), machineStatus.getAttrribute()).toString())))> Double.valueOf(machineStatus.getMin()) ? true : false);
 				for(String str : attrList) {
 					machineAttrList.add(redisUtil.hget((String) machineEntry.getValue(), str));
 				}
