@@ -19,31 +19,31 @@ public class Summary5minServiceImpl implements Summary5minService {
 	
 	@Override
 	public List<Summary5min> listAll() throws Exception {
-		// TODO 查询所有
+		// 查询所有
 		return summary5minMapper.selectByExample(null);
 	}
 
 	@Override
 	public Summary5min getById(Integer id) throws Exception {
-		// TODO 根据主键查询
+		// 根据主键查询
 		return summary5minMapper.selectByPrimaryKey(id);
 	}
 
 	@Override
 	public int save(Summary5min t) throws Exception {
-		// TODO 插入一条数据
+		// 插入一条数据
 		return summary5minMapper.insertSelective(t);
 	}
 
 	@Override
 	public int removeById(Integer id) throws Exception {
-		// TODO 根据主键删除
+		// 根据主键删除
 		return summary5minMapper.deleteByPrimaryKey(id);
 	}
 
 	@Override
 	public List<Summary5min> getNewestLimit(Integer limit) throws Exception {
-		// TODO 查询最新n条记录并按时间排序
+		// 查询最新n条记录并按时间排序
 		return summary5minMapper.getNewestLimit(limit);
 	}
 

@@ -10,5 +10,5 @@ import cn.hzby.lhj.po.SummaryMonth;
 public interface SummaryMonthService extends BaseService<SummaryMonth, Integer> {
 
 	// 查询最新n条记录并按时间排序
-	public List<SummaryMonth> getNewestLimit(Integer limit) throws Exception;
+    List<SummaryMonth> getNewestLimit(Integer limit) throws Exception;
 }

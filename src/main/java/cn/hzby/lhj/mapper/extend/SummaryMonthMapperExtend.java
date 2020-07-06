@@ -9,6 +9,6 @@ import cn.hzby.lhj.po.SummaryMonth;
 
 public interface SummaryMonthMapperExtend extends SummaryMonthMapper {
 
-	@Select("<script>select * from (select * from summary_month order by `timestamp` desc limit #{limit}) a order by timestamp</script>")    
-	public List<SummaryMonth> getNewestLimit(Integer limit); 
+	@Select("<script>select * from (select * from summary_month order by `timestamp` desc limit #{limit}) a order by timestamp</script>")
+    List<SummaryMonth> getNewestLimit(Integer limit);
 }

@@ -9,6 +9,6 @@ import cn.hzby.lhj.po.SummaryHour;
 
 public interface SummaryHourMapperExtend extends SummaryHourMapper {
 
-	@Select("<script>select * from (select * from summary_hour order by `timestamp` desc limit #{limit}) a order by timestamp</script>")    
-	public List<SummaryHour> getNewestLimit(Integer limit); 
+	@Select("<script>select * from (select * from summary_hour order by `timestamp` desc limit #{limit}) a order by timestamp</script>")
+    List<SummaryHour> getNewestLimit(Integer limit);
 }

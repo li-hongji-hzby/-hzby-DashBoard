@@ -17,31 +17,31 @@ public class SummaryDayServiceImpl implements SummaryDayService {
 	
 	@Override
 	public List<SummaryDay> listAll() throws Exception {
-		// TODO 查询所有
+		// 查询所有
 		return summaryDayMapper.selectByExample(null);
 	}
 
 	@Override
 	public SummaryDay getById(Integer id) throws Exception {
-		// TODO 根据主键查询
+		// 根据主键查询
 		return summaryDayMapper.selectByPrimaryKey(id);
 	}
 
 	@Override
 	public int save(SummaryDay t) throws Exception {
-		// TODO 插入一条数据
+		// 插入一条数据
 		return summaryDayMapper.insertSelective(t);
 	}
 
 	@Override
 	public int removeById(Integer id) throws Exception {
-		// TODO 根据主键删除
+		// 根据主键删除
 		return summaryDayMapper.deleteByPrimaryKey(id);
 	}
 
 	@Override
 	public List<SummaryDay> getNewestLimit(Integer limit) throws Exception {
-		// TODO 查询最新n条记录并按时间排序
+		// 查询最新n条记录并按时间排序
 		return summaryDayMapper.getNewestLimit(limit);
 	}
 

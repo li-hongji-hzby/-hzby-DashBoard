@@ -18,25 +18,21 @@ public class MachineAttributeServiceImpl implements MachineAttributeService {
 	
 	@Override
 	public List<MachineAttribute> listAll() throws Exception {
-		// TODO Auto-generated method stub
 		return machineAttributeMapper.selectByExample(null);
 	}
 
 	@Override
 	public MachineAttribute getById(Integer id) throws Exception {
-		// TODO Auto-generated method stub
 		return machineAttributeMapper.selectByPrimaryKey(id);
 	}
 
 	@Override
 	public int save(MachineAttribute t) throws Exception {
-		// TODO Auto-generated method stub
 		return machineAttributeMapper.insertSelective(t);
 	}
 
 	@Override
 	public int removeById(Integer id) throws Exception {
-		// TODO Auto-generated method stub
 		return machineAttributeMapper.deleteByPrimaryKey(id);
 	}
 

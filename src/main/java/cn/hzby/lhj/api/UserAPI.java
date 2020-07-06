@@ -23,6 +23,15 @@ import cn.hzby.lhj.util.JWTUtil;
 @CrossOrigin
 @RestController
 @RequestMapping("/user")
+
+/**
+ * @version: V1.0
+ * @author: LHJ
+ * @className: UserAPI
+ * @packageName: api
+ * @description: 用户登录API
+ * @data: 2020-05-13 11:20
+ **/
 public class UserAPI {
 
 	@Autowired

@@ -11,5 +11,5 @@ import cn.hzby.lhj.po.ProjectHistoryMachineKey;
 public interface ProjectHistoryMachineService extends BaseService<ProjectHistoryMachine, ProjectHistoryMachineKey> {
 
 	// 根据项目查询历史数据页机器
-	public List<ProjectHistoryMachine> listByProjectIsshow(String project) throws Exception;
+    List<ProjectHistoryMachine> listByProjectIsshow(String project) throws Exception;
 }

@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 import cn.hzby.lhj.po.Summary5min;
 import cn.hzby.lhj.service.Summary5minService;
 
+/**
+ * @author lhj
+ */
 @CrossOrigin
 @RestController
 @RequestMapping("/Summary5min")

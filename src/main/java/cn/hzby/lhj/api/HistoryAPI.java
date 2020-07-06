@@ -24,14 +24,23 @@ import cn.hzby.lhj.util.TSDBUtils;
 @RequestMapping("/History")
 @RestController
 @CrossOrigin
+
+/**
+ * @version: V1.0
+ * @author: LHJ
+ * @className: HistoryAPI
+ * @packageName: api
+ * @description: 历史数据页API
+ * @data: 2020-05-13 11:20
+ **/
 public class HistoryAPI {
 	
 
 	/**
-	* @version: V2.0
+	* @version: V1.0
 	* @author:  LHJ
 	* @methodsName: getHistory
-	* @description: 获取历史数据页数据
+	* @description: 从TSDB获取历史数据页数据
 	* @param: JSONObject jsonObj
 	* @return: Map<String, Object>
 	* @throws: 
@@ -70,7 +79,6 @@ public class HistoryAPI {
 			arrList.add(datas);
 			result.put((String) metricMap.get(e.getMetric()), arrList);
 		});
-		System.out.println(result);
 		return result;
 	}
 }

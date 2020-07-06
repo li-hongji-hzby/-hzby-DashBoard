@@ -34,6 +34,7 @@ import cn.hzby.lhj.service.LogMsgService;
  *
  */
 //加入@Aspect 申明一个切面
+@SuppressWarnings("AlibabaRemoveCommentedCode")
 @Aspect
 @Component
 public class LogAspect {
@@ -119,13 +120,13 @@ public class LogAspect {
 		String ipAddress = null;
 		try {
 			ipAddress = request.getHeader("x-forwarded-for");
-			if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
+			if (ipAddress == null || ipAddress.length() == 0 || ipAddress.equalsIgnoreCase("unknown")) {
 				ipAddress = request.getHeader("Proxy-Client-IP");
 			}
-			if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
+			if (ipAddress == null || ipAddress.length() == 0 || ipAddress.equalsIgnoreCase("unknown")) {
 				ipAddress = request.getHeader("WL-Proxy-Client-IP");
 			}
-			if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
+			if (ipAddress == null || ipAddress.length() == 0 || ipAddress.equalsIgnoreCase("unknown")) {
 				ipAddress = request.getRemoteAddr();
 				if (ipAddress.equals("127.0.0.1")) {
 					// 根据网卡取本机配置的IP
@@ -133,7 +134,7 @@ public class LogAspect {
 					try {
 						inet = InetAddress.getLocalHost();
 					} catch (UnknownHostException e) {
-//						log.error("获取ip异常：{}" ,e.getMessage());
+						// log.error("获取ip异常：{}" ,e.getMessage());
 						e.printStackTrace();
 					}
 					ipAddress = inet.getHostAddress();
@@ -149,7 +150,6 @@ public class LogAspect {
 			ipAddress = "";
 		}
 		// ipAddress = this.getRequest().getRemoteAddr();
-
 		return ipAddress;
 	}	
 }

@@ -57,17 +57,24 @@ public class RealTimeAPI {
     @Resource
     private RedisUtil redisUtil;
 
-	// 获取实时数据页机器数据
+	/**
+	* @version: V1.0
+	* @author:  LHJ
+	* @methodsName: listRealTimeDatas
+	* @description: 从TSDB获取实时数据页机器数据（已废弃）
+	* @param: JSONObject jsonObj
+	* @return: Map<String, Object>
+	* @throws: 
+	*/
 	@RequestMapping(value = "/listRealTimeDatas",method = RequestMethod.POST)
 	public Map<String, Object> listRealTimeDatas(@RequestBody JSONObject jsonObj) throws Exception{
 		Map<?, ?> tableMsgMap = JSON.parseObject(JSON.toJSONString(jsonObj.get("tableMsg")),Map.class);
 		String project = (String)((Map<?, ?>)jsonObj.get("project")).get("projectNameEn");
 		Map<String,Object> resultMap = new LinkedHashMap<String, Object>(16);
-		long start = System.currentTimeMillis();
 		// 根据机器类型取出数据
 		for (Entry<?, ?> tableMsgEntry : tableMsgMap.entrySet()) {
 			// 取出属性存为List
-			List<String> attrList = new ArrayList<String>();
+			ArrayList<String> attrList = new ArrayList<String>();
 			Map<?, ?> attrsMap = (JSONObject)(((JSONObject)tableMsgEntry.getValue()).get("attributes"));
 			for (Entry<?, ?> attrEntry : attrsMap.entrySet()) {
 				attrList.add((String)attrEntry.getValue());
@@ -84,28 +91,33 @@ public class RealTimeAPI {
 				key.setProjectNameEn(project);
 				MachineStatus machineStatus = machineStatusService.getById(Integer.valueOf(projectRealtimeMachineService.getById(key).getMachinePower()));
 				LastDataValue pwoer = tsdbUtils.getLastOne(machineStatus.getAttrribute(), machineStatus.getMachineName()).get(0);
-				mechine.put("status", ((BigDecimal)pwoer.getValue()).setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue()>machineStatus.getMin()?true : false);
+				mechine.put("status", ((BigDecimal) pwoer.getValue()).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue() > machineStatus.getMin());
 				queryList.stream().forEach( f -> mechine.put(f.getMetric(), ((BigDecimal) f.getValue()).setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue()));
 				resList.add(mechine);
 			}
 			resultMap.put((String)tableMsgEntry.getKey(), resList);
 		}
-		long end = System.currentTimeMillis();
-		System.out.println(end - start);
 		return resultMap;
 	}
 	
-	// 获取实时数据页数据总和
+	/**
+	* @version: V1.0
+	* @author:  LHJ
+	* @methodsName: getRealtimeSummary
+	* @description: 从TSDB获取实时数据页数据总和
+	* @param: JSONObject jsonObj
+	* @return: Map<String, Object>
+	* @throws: 
+	*/
 	@SuppressWarnings("serial")
 	@RequestMapping(value = "/getRealtimeSummary",method = RequestMethod.POST)
 	public Map<String, Double> getRealtimeSummary(@RequestBody JSONObject jsonObj) throws Exception{
-		System.out.println(jsonObj);
 		Project project = JSON.parseObject(JSON.toJSONString(jsonObj.get("project")), Project.class);
 		List<Map<String, String>> queryMapList = new ArrayList<Map<String,String>>();
 		List<ProjectRealtimeSummaryWithBLOBs> summaryList = projectRealtimeSummaryService.getByProject((String) ((Map<?, ?>)jsonObj.get("project")).get("projectNameEn"));
 		summaryList.parallelStream().forEach( e -> {
 			JSON.parseArray(e.getMachineList(), String.class).parallelStream().forEach( f -> {
-				queryMapList.add(new HashMap<String, String>(){{
+				queryMapList.add(new HashMap<String, String>(16){{
 				      put("metric",e.getAttribute());  
 				      put("device",f);
 				}});
@@ -113,24 +125,30 @@ public class RealTimeAPI {
 		});
 		TSDBUtils tsdbUtils  = new TSDBUtils();
 		Map<String, List<LastDataValue>> a = (tsdbUtils.getRealtimeSummary(queryMapList,project.getProjectNameEn()).stream().collect(Collectors.groupingBy(LastDataValue::getMetric)));
-		Map<String,Double> sumMap = new HashMap<String, Double>();
+		Map<String,Double> sumMap = new HashMap<String, Double>(16);
 		a.keySet().forEach( e-> sumMap.put(e, a.get(e).stream().mapToDouble(p -> (Double.valueOf(new DecimalFormat("#.00").format(p.getValue()))))
 		         .sum()));
-		Map<String,Double> resultMap = new HashMap<String, Double>();
+		Map<String,Double> resultMap = new HashMap<String, Double>(16);
 		summaryList.parallelStream().forEach(e -> resultMap.put(e.getDataName(), sumMap.get(e.getAttribute())));
 		resultMap.put("单耗", Double.valueOf(new DecimalFormat("#.00").format(resultMap.get("功率")/resultMap.get("流量"))));
 		return resultMap;
 	}
 
 
-	// 从缓存中获取实时数据页机器数据
-	@SuppressWarnings("serial")
+	/**
+	* @version: V1.0
+	* @author:  LHJ
+	* @methodsName: listRealTimeDatasCache
+	* @description: 从Redis获取实时数据页机器数据
+	* @param: JSONObject jsonObj
+	* @return: Map<String, Object>
+	* @throws: 
+	*/
 	@RequestMapping(value = "/listRealTimeDatasCache",method = RequestMethod.POST)
 	public Map<String, Object> listRealTimeDatasCache(@RequestBody JSONObject jsonObj) throws Exception{
 		Map<?, ?> tableMsgMap = JSON.parseObject(JSON.toJSONString(jsonObj.get("tableMsg")),Map.class);
 		String project = (String)((Map<?, ?>)jsonObj.get("project")).get("projectNameEn");
 		Map<String,Object> resultMap = new LinkedHashMap<String, Object>(16);
-		long start = System.currentTimeMillis();
 		// 根据机器类型取出数据
 		for (Entry<?, ?> tableMsgEntry : tableMsgMap.entrySet()) {
 			// 取出属性存为List
@@ -148,8 +166,7 @@ public class RealTimeAPI {
 				key.setMachineNameEn((String)machineEntry.getValue());
 				key.setProjectNameEn(project);
 				MachineStatus machineStatus = machineStatusService.getById(Integer.valueOf(projectRealtimeMachineService.getById(key).getMachinePower()));
-//				System.out.println(Double.valueOf(String.format("%f",redisUtil.hget(machineStatus.getMachineName(), machineStatus.getAttrribute()))));
-				machineAttrList.add(Double.valueOf(String.format("%.2f",Double.valueOf(redisUtil.hget(machineStatus.getMachineName(), machineStatus.getAttrribute()).toString())))> Double.valueOf(machineStatus.getMin()) ? true : false);
+				machineAttrList.add(Double.valueOf(String.format("%.2f", Double.valueOf(redisUtil.hget(machineStatus.getMachineName(), machineStatus.getAttrribute()).toString()))) > Double.valueOf(machineStatus.getMin()));
 				for(String str : attrList) {
 					machineAttrList.add(redisUtil.hget((String) machineEntry.getValue(), str));
 				}
@@ -157,9 +174,6 @@ public class RealTimeAPI {
 			}
 			resultMap.put((String)tableMsgEntry.getKey(), resList);
 		}
-		long end = System.currentTimeMillis();
-		System.out.println(end - start);
-//		System.out.println(resultMap);
 		return resultMap;
 	}
 }

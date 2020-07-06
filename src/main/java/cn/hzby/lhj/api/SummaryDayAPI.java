@@ -11,9 +11,13 @@ import org.springframework.web.bind.annotation.RestController;
 import cn.hzby.lhj.po.SummaryDay;
 import cn.hzby.lhj.service.SummaryDayService;
 
+
 @CrossOrigin
 @RestController
 @RequestMapping("/SummaryDay")
+/**
+ * @author lhj
+ */
 public class SummaryDayAPI {
 
 	@Autowired

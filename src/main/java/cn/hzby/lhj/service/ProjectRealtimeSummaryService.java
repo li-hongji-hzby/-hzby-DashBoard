@@ -10,6 +10,6 @@ import cn.hzby.lhj.po.ProjectRealtimeSummaryWithBLOBs;
 @Service
 public interface ProjectRealtimeSummaryService extends BaseService<ProjectRealtimeSummaryWithBLOBs, ProjectRealtimeSummaryKey> {
 
-	public List<ProjectRealtimeSummaryWithBLOBs> getByProject(String project) throws Exception;
+	List<ProjectRealtimeSummaryWithBLOBs> getByProject(String project) throws Exception;
 	
 }

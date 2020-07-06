@@ -14,6 +14,9 @@ import cn.hzby.lhj.service.SummaryMonthService;
 @CrossOrigin
 @RestController
 @RequestMapping("/SummaryMonth")
+/**
+ * @author lhj
+ */
 public class SummaryMonthAPI {
 
 	@Autowired

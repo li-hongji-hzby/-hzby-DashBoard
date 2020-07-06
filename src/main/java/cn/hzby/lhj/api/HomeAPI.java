@@ -43,15 +43,23 @@ public class HomeAPI {
     @Resource
     private RedisUtil redisUtil;
 
-	// 获取 5分钟/n小时 数据点
+	/**
+	* @version: V1.0
+	* @author:  LHJ
+	* @methodsName: getHoursAgo
+	* @description: 获取 5分钟/n小时 数据点
+	* @param: String getJSON
+	* @return: Map<String, Object>
+	* @throws: 
+	*/
 	@SuppressWarnings("finally")
 	@RequestMapping(value = "/getHoursAgo", method = RequestMethod.POST)
-	public Map<String,Object> getHoursAgo(@RequestBody String getJSON) throws Exception{
+	public Map<String,Object> getHoursAgo(@RequestBody String getJson) throws Exception{
 		TSDBUtils tsdbUtils = new TSDBUtils();
-		Map<String, String> JSONMap = JSON.parseObject(getJSON, new TypeReference<Map<String, String>>(){});
-        String metricsListStr = (String) JSONMap.get("metrics");
+		Map<String, String> JsonMap = JSON.parseObject(getJson, new TypeReference<Map<String, String>>(){});
+        String metricsListStr = JsonMap.get("metrics");
 		List<String> metricsList = JSONObject.parseArray(metricsListStr,String.class);
-		List<QueryResult> qs = tsdbUtils.get5MinAvg(Integer.valueOf(JSONMap.get("hour")), metricsList);
+		List<QueryResult> qs = tsdbUtils.get5MinAvg(Integer.valueOf(JsonMap.get("hour")), metricsList);
 		Set<Entry<Long, Object>> entrys = qs.get(0).getDps().entrySet();
 		Map<Long, Object> airDatas = new HashMap<Long,Object>(16);
 		airDatas = qs.get(0).getDps();
@@ -86,34 +94,76 @@ public class HomeAPI {
 		return result;
 	}
 
-	// 获取年数据
+	/**
+	* @version: V1.0
+	* @author:  LHJ
+	* @methodsName: getMonthsData
+	* @description: 从redis获取年数据
+	* @param: JSONObject jsonObj
+	* @return: String
+	* @throws: 
+	*/
 	@RequestMapping(value = "/getMonthsData", method = RequestMethod.POST)
 	public String getMonthsData(@RequestBody JSONObject jsonObj)throws Exception{
 		String project = (String)((Map<?, ?>)jsonObj.get("project")).get("projectNameEn");
 		return redisUtil.hmget(project).get("MonthsData").toString();
 	}
 
-	// 获取月数据
+	/**
+	* @version: V1.0
+	* @author:  LHJ
+	* @methodsName: getDaysData
+	* @description: 从redis获取月数据
+	* @param: JSONObject jsonObj
+	* @return: String
+	* @throws: 
+	*/
 	@RequestMapping(value = "/getDaysData", method = RequestMethod.POST)
 	public String getDaysData(@RequestBody JSONObject jsonObj)throws Exception{
 		String project = (String)((Map<?, ?>)jsonObj.get("project")).get("projectNameEn");
 		return redisUtil.hmget(project).get("DaysData").toString();
 	}
 
-	// 获取日数据
+	/**
+	* @version: V1.0
+	* @author:  LHJ
+	* @methodsName: getHoursData
+	* @description: 从redis获取日数据
+	* @param: JSONObject jsonObj
+	* @return: String
+	* @throws: 
+	*/
 	@RequestMapping(value = "/getHoursData", method = RequestMethod.POST)
 	public String getHoursData(@RequestBody JSONObject jsonObj)throws Exception{
 		String project = (String)((Map<?, ?>)jsonObj.get("project")).get("projectNameEn");
 		return redisUtil.hmget(project).get("HoursData").toString();
 	}
 
-	// 获取概览数据
+	/**
+	* @version: V1.0
+	* @author:  LHJ
+	* @methodsName: getSummaryData
+	* @description: 从redis获取概览数据
+	* @param: JSONObject jsonObj
+	* @return: String
+	* @throws: 
+	*/
 	@RequestMapping(value = "/getSummaryData", method = RequestMethod.POST)
 	public String getSummary(@RequestBody JSONObject jsonObj)throws Exception{
 		String project = (String)((Map<?, ?>)jsonObj.get("project")).get("projectNameEn");
 		return redisUtil.hmget(project).get("summary").toString();
 	}
 	
+	
+	/**
+	* @version: V1.0
+	* @author:  LHJ
+	* @methodsName: getSummaryData
+	* @description: 从TSDB首页主表格数据（已废弃）
+	* @param: Long timestamp,String downsample,String porject,List<String> metrics 
+	* @return: List<HomeCardVo>
+	* @throws: 
+	*/
     @SuppressWarnings("finally")
 	public static List<HomeCardVo> getMainChartData(Long timestamp,String downsample,String porject,List<String> metrics )throws Exception{
 		TSDBUtils tsdbUtils = new TSDBUtils();

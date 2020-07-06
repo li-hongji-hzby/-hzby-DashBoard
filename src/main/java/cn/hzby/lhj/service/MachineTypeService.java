@@ -10,5 +10,5 @@ import cn.hzby.lhj.po.MachineType;
 public interface MachineTypeService extends BaseService<MachineType, Integer> {
 	
 	// 根据属性列表获取机器属性
-	public Map<String, Object> getAttributeList(Integer machineTypeId) throws Exception;
+    Map<String, Object> getAttributeList(Integer machineTypeId) throws Exception;
 }

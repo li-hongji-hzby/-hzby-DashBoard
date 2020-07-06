@@ -14,6 +14,9 @@ import cn.hzby.lhj.service.SummaryHourService;
 @CrossOrigin
 @RestController
 @RequestMapping("/SummaryHour")
+/**
+ * @author lhj
+ */
 public class SummaryHourAPI {
 	
 	@Autowired

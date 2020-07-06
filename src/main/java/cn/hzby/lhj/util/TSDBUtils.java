@@ -7,11 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
 
-import org.apache.log4j.lf5.viewer.configure.MRUFileManager;
 
-import com.alibaba.fastjson.JSON;
 import com.aliyun.hitsdb.client.TSDB;
 import com.aliyun.hitsdb.client.TSDBClientFactory;
 import com.aliyun.hitsdb.client.TSDBConfig;
@@ -24,11 +21,18 @@ import com.aliyun.hitsdb.client.value.response.QueryResult;
 import com.aliyun.hitsdb.client.value.type.Aggregator;
 
 import cn.hzby.lhj.po.ProjectMainSummary;
-
+/**
+ * @version: V1.0
+ * @author: LHJ
+ * @className: TSDBUtils
+ * @packageName: utils
+ * @description: TSDB连接工具类
+ * @data: 2020-05-13 11:20
+ **/
 public class TSDBUtils {
 
-	private static String address = "ts-uf69c6a82riq43l53.hitsdb.rds.aliyuncs.com";
-	private static int port = 3242;
+	private static final String ADDRESS = "ts-uf69c6a82riq43l53.hitsdb.rds.aliyuncs.com";
+	private static final int PORT = 3242;
 	
 	
 	/**
@@ -41,7 +45,7 @@ public class TSDBUtils {
 	*/
 	public List<QueryResult> getData(Long startTime, Long endTime,String device, String downsample,List<String> metrics) throws IOException {  //  ,String machine
         // 创建 TSDB 对象
-        TSDBConfig config = TSDBConfig.address(address, port).config();
+        TSDBConfig config = TSDBConfig.address(ADDRESS, PORT).config();
         TSDB tsdb = TSDBClientFactory.connect(config);
         // 构造查询条件并查询数据。
         // 查询一小时的数据
@@ -75,10 +79,10 @@ public class TSDBUtils {
 	*/
 	public List<QueryResult> get5MinAvg(Integer hour,List<String> metrics) throws IOException {  //  ,String machine
         // 创建 TSDB 对象
-        TSDBConfig config = TSDBConfig.address(address, port).config();
+        TSDBConfig config = TSDBConfig.address(ADDRESS, PORT).config();
         TSDB tsdb = TSDBClientFactory.connect(config);
         // 构造查询条件并查询数据。
-        long time = 60*60*1000; //一小时
+        long time = 60*60*1000;
         Query query =new Query();
     	List<SubQuery> SubQuerys = new ArrayList<SubQuery>();
         for(String metric: metrics) {
@@ -105,7 +109,7 @@ public class TSDBUtils {
 	*/
 	public List<QueryResult> getByTimeAndDownSample(Long timestamp,String downsample,String project,List<String> metrics) throws IOException {
         // 创建 TSDB 对象
-        TSDBConfig config = TSDBConfig.address(address, port).config();
+        TSDBConfig config = TSDBConfig.address(ADDRESS, PORT).config();
         TSDB tsdb = TSDBClientFactory.connect(config);
     	List<SubQuery> SubQuerys = new ArrayList<SubQuery>();
         for(String metric: metrics) {
@@ -120,10 +124,7 @@ public class TSDBUtils {
                 .sub(SubQuerys)
                 .build(); //.downsample("10m-avg")
         // 查询数据
-//        System.out.println(query);
         List<QueryResult> result = tsdb.query(query);
-        // 打印输出
-        // System.out.println(result);
         // 安全关闭客户端，以防数据丢失。
         tsdb.close();
         return result;
@@ -139,9 +140,9 @@ public class TSDBUtils {
 	*/
 	public List<LastDataValue> getLastOne(String metric,String device) throws IOException {
         // 创建 TSDB 对象
-        TSDBConfig config = TSDBConfig.address(address, port).config();
+        TSDBConfig config = TSDBConfig.address(ADDRESS, PORT).config();
         TSDB tsdb = TSDBClientFactory.connect(config);
-        Map<String, String> tags = new HashMap<>();
+        Map<String, String> tags = new HashMap<>(16);
         tags.put("device", device);
         LastPointQuery query = LastPointQuery.builder()
                 // 以指定时间戳向前推进几个小时，默认为0，即指定时间戳所在的小时时间;
@@ -170,7 +171,7 @@ public class TSDBUtils {
 	*/
 	public List<LastDataValue> getLastMulti(List<String> metrics,String device,String project) throws IOException {  //  ,String machine
         // 创建 TSDB 对象
-        TSDBConfig config = TSDBConfig.address(address, port).config();
+        TSDBConfig config = TSDBConfig.address(ADDRESS, PORT).config();
         TSDB tsdb = TSDBClientFactory.connect(config);
         Map<String, String> tags = new HashMap<String, String>(16);
         tags.put("device", device);
@@ -199,7 +200,7 @@ public class TSDBUtils {
 	@SuppressWarnings("serial")
 	public List<LastDataValue> getRealtimeSummary(List<Map<String,String>> queryMapList,String project) throws IOException {  //  ,String machine
         // 创建 TSDB 对象
-        TSDBConfig config = TSDBConfig.address(address, port).config();
+        TSDBConfig config = TSDBConfig.address(ADDRESS, PORT).config();
         TSDB tsdb = TSDBClientFactory.connect(config);
         List<LastPointSubQuery> subQuerys = new ArrayList<LastPointSubQuery>();
 		for (Map<String,String> queryMsg : queryMapList) {
@@ -229,7 +230,7 @@ public class TSDBUtils {
 	@SuppressWarnings({ "serial" })
 	public static Map<String, Map<String, Double>> getMainSummary(List<ProjectMainSummary> summaryList) throws Exception {  //  ,String machine
         // 创建 TSDB 对象
-        TSDBConfig config = TSDBConfig.address(address, port).config();
+        TSDBConfig config = TSDBConfig.address(ADDRESS, PORT).config();
         TSDB tsdb = TSDBClientFactory.connect(config); 
         Map<String,Map<String,Double>> resultMap = new HashMap<String, Map<String,Double>>(16);
 		summaryList.parallelStream().forEach(e -> {
@@ -242,20 +243,11 @@ public class TSDBUtils {
 	                .build();
 	        QueryResult queryRes = tsdb.query(query).get(0);
 	        String project = queryRes.getTags().get("project");
-//	        Query queryHourAgo = Query.start(System.currentTimeMillis()/1000 -60*60)
-//	                .sub(SubQuery.metric(e.getAttribute())
-//	                        .aggregator(Aggregator.SUM)
-//	                        .downsample("1h-max")
-//	                        .tag("project",e.getProjectNameEn())
-//	                        .build())
-//	                .build();
-//	        QueryResult resHourAgo = tsdb.query(queryHourAgo).get(0);
 	        BigDecimal now = (BigDecimal) queryRes.getDps().values().iterator().next();
-//	        BigDecimal hourAgo = (BigDecimal) resHourAgo.getDps().values().iterator().next();
 	        if(resultMap.get(project) != null) {
 	        	 resultMap.get(project).put(queryRes.getMetric(),  (now).doubleValue());
 	        }else {
-	        	resultMap.put(project, new HashMap<String,Double>() {{
+	        	resultMap.put(project, new HashMap<String,Double>(16) {{
 	        		put(queryRes.getMetric(),  (now).doubleValue());
 	        	}});
 	        }

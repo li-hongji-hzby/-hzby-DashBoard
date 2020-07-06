@@ -4,13 +4,15 @@ import java.util.Map;
 
 import cn.hzby.lhj.po.Machine;
 
+/**
+ * @author lhj
+ */
 public class MachineWithAttributes extends Machine{
 
 	private Map<String, Object> attributeList;
 
 	public MachineWithAttributes() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 	
 	public MachineWithAttributes(Map<String, Object> attributeList) {

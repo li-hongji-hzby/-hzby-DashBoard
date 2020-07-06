@@ -12,7 +12,7 @@ import cn.hzby.lhj.po.ProjectRealtimeMachineKey;
 public interface ProjectRealtimeMachineService extends BaseService<ProjectRealtimeMachine, ProjectRealtimeMachineKey> {
 
 	// 根据项目查询实时数据页机器
-	public Map<String, List<ProjectRealtimeMachine>> listByProjectIsshow(String project) throws Exception;
+    Map<String, List<ProjectRealtimeMachine>> listByProjectIsshow(String project) throws Exception;
 	
 	
 }

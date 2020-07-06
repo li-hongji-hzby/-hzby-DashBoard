@@ -18,25 +18,25 @@ public class RealtimeOverviewServiceImpl implements RealtimeOverviewService {
 	
 	@Override
 	public List<RealtimeOverview> listAll() throws Exception {
-		// TODO 查询所有
+		// 查询所有
 		return realtimeOverviewMapper.selectByExample(null);
 	}
 
 	@Override
 	public RealtimeOverview getById(String id) throws Exception {
-		// TODO 根据主键查询
+		// 根据主键查询
 		return realtimeOverviewMapper.selectByPrimaryKey(id);
 	}
 
 	@Override
 	public int save(RealtimeOverview t) throws Exception {
-		// TODO 插入一条数据
+		// 插入一条数据
 		return realtimeOverviewMapper.insertSelective(t);
 	}
 
 	@Override
 	public int removeById(String id) throws Exception {
-		// TODO 根据主键删除
+		// 根据主键删除
 		return realtimeOverviewMapper.deleteByPrimaryKey(id);
 	}
 

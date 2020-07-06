@@ -21,7 +21,6 @@ public class HomeCardVo implements Serializable{
 	
 	public HomeCardVo() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 	
 	public HomeCardVo(long timestamp, double electricity, double air, double unitCost) {

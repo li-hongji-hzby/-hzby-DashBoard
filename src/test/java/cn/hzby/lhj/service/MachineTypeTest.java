@@ -29,7 +29,7 @@ public class MachineTypeTest {
 	
 	@Test
 	public void getAttributeList() throws Exception{
-		System.out.println(machineTypeServiceImpl.getAttributeList(1));;
-	}
+		System.out.println(machineTypeServiceImpl.getAttributeList(1));
+    }
 	
 }

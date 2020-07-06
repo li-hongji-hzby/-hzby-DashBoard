@@ -17,25 +17,25 @@ public class RealtimeDryerServiceImpl implements RealtimeDryerService {
 	
 	@Override
 	public List<RealtimeDryer> listAll() throws Exception {
-		// TODO 查询所有
+		// 查询所有
 		return realtimeDryerMapper.selectByExample(null);
 	}
 
 	@Override
 	public RealtimeDryer getById(String id) throws Exception {
-		// TODO 根据主键查询
+		// 根据主键查询
 		return realtimeDryerMapper.selectByPrimaryKey(id);
 	}
 
 	@Override
 	public int save(RealtimeDryer t) throws Exception {
-		// TODO 插入一条数据
+		// 插入一条数据
 		return realtimeDryerMapper.insertSelective(t);
 	}
 
 	@Override
 	public int removeById(String id) throws Exception {
-		// TODO 根据主键删除
+		// 根据主键删除
 		return realtimeDryerMapper.deleteByPrimaryKey(id);
 	}
 }

@@ -25,25 +25,21 @@ public class MachineServiceImpl implements MachineService {
 	
 	@Override
 	public List<Machine> listAll() throws Exception {
-		// TODO Auto-generated method stub
 		return machineMapper.selectByExample(null);
 	}
 
 	@Override
 	public Machine getById(MachineKey id) throws Exception {
-		// TODO Auto-generated method stub
 		return machineMapper.selectByPrimaryKey(id);
 	}
 
 	@Override
 	public int save(Machine t) throws Exception {
-		// TODO Auto-generated method stub
 		return machineMapper.insertSelective(t);
 	}
 
 	@Override
 	public int removeById(MachineKey id) throws Exception {
-		// TODO Auto-generated method stub
 		return machineMapper.deleteByPrimaryKey(id);
 	}
 

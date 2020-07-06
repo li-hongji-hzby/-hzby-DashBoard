@@ -12,5 +12,5 @@ import cn.hzby.lhj.vo.MachineWithAttributes;
 public interface MachineService extends BaseService<Machine, MachineKey> {
 
 
-	public List<MachineWithAttributes> listAllWithAttributes() throws Exception;
+	List<MachineWithAttributes> listAllWithAttributes() throws Exception;
 }
