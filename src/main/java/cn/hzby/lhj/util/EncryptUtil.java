@@ -13,7 +13,7 @@ public class EncryptUtil {
 	* @param str 加密后的报文
 	* @return
 	*/
-	public static String getSHA256Str(String str){
+	public static String getSha256Str(String str){
 	 MessageDigest messageDigest;
 	 String encdeStr = "";
 	 try {

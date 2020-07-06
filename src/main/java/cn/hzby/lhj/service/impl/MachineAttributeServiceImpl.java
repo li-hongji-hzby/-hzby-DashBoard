@@ -36,7 +36,7 @@ public class MachineAttributeServiceImpl implements MachineAttributeService {
 		return machineAttributeMapper.deleteByPrimaryKey(id);
 	}
 
-	// 根据ID批量查询属性
+	//根据ID批量查询属性
 	@Override
 	public List<MachineAttribute> listByIds(List<Integer> ids) throws Exception {
 		List<MachineAttribute>  attributeList = new ArrayList<MachineAttribute>();

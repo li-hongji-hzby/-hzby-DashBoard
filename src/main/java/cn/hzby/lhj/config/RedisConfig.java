@@ -16,6 +16,9 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import cn.hzby.lhj.util.FastJsonRedisSerializer;
 
+/**
+ * @author lhj
+ */
 @Configuration
 //开启注解
 @EnableCaching
@@ -30,15 +33,13 @@ public class RedisConfig extends CachingConfigurerSupport {
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory factory) {
 
         RedisTemplate<String, Object> template = new RedisTemplate<>();
-        // 配置连接工厂
+        /* 配置连接工厂*/
         template.setConnectionFactory(factory);
         FastJsonRedisSerializer<Object> fastJsonRedisSerializer = new FastJsonRedisSerializer<>(Object.class);
-        // 全局开启AutoType，不建议使用
-        // ParserConfig.getGlobalInstance().setAutoTypeSupport(true);
-        // 设置值（value）的序列化采用FastJsonRedisSerializer。
+        /* 设置值（value）的序列化采用FastJsonRedisSerializer。*/
         template.setValueSerializer(fastJsonRedisSerializer);
         template.setHashValueSerializer(fastJsonRedisSerializer);
-        // 设置键（key）的序列化采用StringRedisSerializer。
+        /* 设置键（key）的序列化采用StringRedisSerializer。*/
         template.setKeySerializer(new StringRedisSerializer());
         template.setHashKeySerializer(new StringRedisSerializer());
         template.afterPropertiesSet();

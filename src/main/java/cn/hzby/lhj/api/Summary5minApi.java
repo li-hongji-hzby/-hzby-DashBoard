@@ -8,22 +8,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import cn.hzby.lhj.po.SummaryHour;
-import cn.hzby.lhj.service.SummaryHourService;
+import cn.hzby.lhj.po.Summary5min;
+import cn.hzby.lhj.service.Summary5minService;
 
-@CrossOrigin
-@RestController
-@RequestMapping("/SummaryHour")
 /**
  * @author lhj
  */
-public class SummaryHourAPI {
+@CrossOrigin
+@RestController
+@RequestMapping("/Summary5min")
+public class Summary5minApi {
 	
 	@Autowired
-	private SummaryHourService summaryHourService;
+	private Summary5minService summary5minService;
 	
 	@RequestMapping(value="/getNewestLimit")
-	public List<SummaryHour> getNewestLimit(@RequestParam("limit") Integer limit) throws Exception{
-		return summaryHourService.getNewestLimit(limit);
+	public List<Summary5min> getNewestLimit(@RequestParam("limit") Integer limit) throws Exception{
+		return summary5minService.getNewestLimit(limit);
 	}
+	
 }

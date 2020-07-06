@@ -16,6 +16,9 @@ import cn.hzby.lhj.po.ProjectRealtimeMachineKey;
 import cn.hzby.lhj.service.MachineAttributeService;
 import cn.hzby.lhj.service.ProjectRealtimeMachineService;
 
+/**
+ * @author lhj
+ */
 @Service
 public class ProjectRealtimeMachineServiceImpl implements ProjectRealtimeMachineService {
 

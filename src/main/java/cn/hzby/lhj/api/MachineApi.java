@@ -10,17 +10,18 @@ import cn.hzby.lhj.po.Machine;
 import cn.hzby.lhj.service.MachineService;
 import cn.hzby.lhj.vo.MachineWithAttributes;
 
+
 /**
+ * @author lhj
  * @version: V1.0
- * @author: LHJ
- * @className: MachineAPI
+ * @className: MachineApi
  * @packageName: api
  * @description: 机器数据API
  * @data: 2020-05-13 11:20
  **/
 @RequestMapping("/Machine")
 @RestController
-public class MachineAPI {
+public class MachineApi {
 
 	@Autowired
 	private MachineService machineService;

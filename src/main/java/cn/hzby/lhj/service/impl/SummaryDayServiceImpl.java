@@ -9,6 +9,9 @@ import cn.hzby.lhj.mapper.extend.SummaryDayMapperExtend;
 import cn.hzby.lhj.po.SummaryDay;
 import cn.hzby.lhj.service.SummaryDayService;
 
+/**
+ * @author lhj
+ */
 @Service
 public class SummaryDayServiceImpl implements SummaryDayService {
 

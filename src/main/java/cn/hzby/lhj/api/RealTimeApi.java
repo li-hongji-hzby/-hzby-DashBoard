@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
+import cn.hzby.lhj.util.TsdbUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,12 +32,11 @@ import cn.hzby.lhj.service.MachineStatusService;
 import cn.hzby.lhj.service.ProjectRealtimeMachineService;
 import cn.hzby.lhj.service.ProjectRealtimeSummaryService;
 import cn.hzby.lhj.util.RedisUtil;
-import cn.hzby.lhj.util.TSDBUtils;
 
 /**
  * @version: V1.0
  * @author: LHJ
- * @className: RealTime
+ * @className: RealTimeApi
  * @packageName: api
  * @description: 实时数据API
  * @data: 2020-07-06 09:56
@@ -44,7 +44,7 @@ import cn.hzby.lhj.util.TSDBUtils;
 @CrossOrigin
 @RestController
 @RequestMapping("/RealTime")
-public class RealTimeAPI {
+public class RealTimeApi {
 
 
 	@Autowired
@@ -82,7 +82,7 @@ public class RealTimeAPI {
 			Map<String, Object> machineMap = (JSONObject)(((JSONObject)tableMsgEntry.getValue()).get("machines"));
 			List<Object> resList =new ArrayList<Object>();
 			for (Entry<?, ?> machineEntry : machineMap.entrySet()) {
-				TSDBUtils tsdbUtils  = new TSDBUtils();
+				TsdbUtils tsdbUtils  = new TsdbUtils();
 				List<LastDataValue> queryList = tsdbUtils.getLastMulti(attrList,(String)machineEntry.getValue(),project);
 				Map<String,Object> mechine = new LinkedHashMap<String, Object>(16);
 				mechine.put("machine", machineEntry.getKey());
@@ -123,7 +123,7 @@ public class RealTimeAPI {
 				}});
 			}); 
 		});
-		TSDBUtils tsdbUtils  = new TSDBUtils();
+		TsdbUtils tsdbUtils  = new TsdbUtils();
 		Map<String, List<LastDataValue>> a = (tsdbUtils.getRealtimeSummary(queryMapList,project.getProjectNameEn()).stream().collect(Collectors.groupingBy(LastDataValue::getMetric)));
 		Map<String,Double> sumMap = new HashMap<String, Double>(16);
 		a.keySet().forEach( e-> sumMap.put(e, a.get(e).stream().mapToDouble(p -> (Double.valueOf(new DecimalFormat("#.00").format(p.getValue()))))

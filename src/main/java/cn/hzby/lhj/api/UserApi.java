@@ -18,21 +18,20 @@ import cn.hzby.lhj.po.User;
 import cn.hzby.lhj.service.ProjectService;
 import cn.hzby.lhj.service.UserService;
 import cn.hzby.lhj.util.EncryptUtil;
-import cn.hzby.lhj.util.JWTUtil;
-
-@CrossOrigin
-@RestController
-@RequestMapping("/user")
+import cn.hzby.lhj.util.JwtUtil;
 
 /**
  * @version: V1.0
- * @author: LHJ
- * @className: UserAPI
+ * @author: lhj
+ * @className: UserApi
  * @packageName: api
  * @description: 用户登录API
  * @data: 2020-05-13 11:20
  **/
-public class UserAPI {
+@CrossOrigin
+@RestController
+@RequestMapping("/user")
+public class UserApi {
 
 	@Autowired
 	private UserService userSrvice;
@@ -42,11 +41,11 @@ public class UserAPI {
 	
 	@RequestMapping(value="/register",method=RequestMethod.POST)
 	public Map<String, String> register(@RequestParam("username")String username,@RequestParam("password")String password) throws Exception{
-		Map<String, String> result = new HashMap<String, String>();
+		Map<String, String> result = new HashMap<String, String>(16);
 		User user = new User();
 		try {
 			user.setUsername(username);
-			user.setPassword(EncryptUtil.getSHA256Str(password));
+			user.setPassword(EncryptUtil.getSha256Str(password));
 			userSrvice.save(user);
 			result.put("msg", "注册成功");
 			result.put("code","1");
@@ -59,19 +58,19 @@ public class UserAPI {
 	}
 	
 	@RequestMapping(value="/login", method=RequestMethod.POST)
-	public Map<String, String> login(@RequestBody JSONObject getJSON) throws Exception{
-		Map<String, String> result = new HashMap<String, String>();
+	public Map<String, String> login(@RequestBody JSONObject getJson) throws Exception{
+		Map<String, String> result = new HashMap<String, String>(16);
 		User user = new User();
-		String username = getJSON.getString("username");
-		String password = getJSON.getString("password");
+		String username = getJson.getString("username");
+		String password = getJson.getString("password");
 		try {
 			user = userSrvice.getById(username);
 			if(user!=null) {
-				if(user.getPassword().equals(EncryptUtil.getSHA256Str(password)) && user.getStatus()) {
-					String JWTString = JWTUtil.setJWT(user.getUsername(), user.getUsername(), 1000*60*2880*7);
-					Map<String, Object> msg = new HashMap<String, Object>();
+				if(user.getPassword().equals(EncryptUtil.getSha256Str(password)) && user.getStatus()) {
+					String jwtString = JwtUtil.setJwt(user.getUsername(), user.getUsername(), 1000*60*2880*7);
+					Map<String, Object> msg = new HashMap<String, Object>(16);
 					msg.put("user", username);
-					msg.put("jwt", JWTString);
+					msg.put("jwt", jwtString);
 					msg.put("pageConfig", projectService.getProjectConfigByUser(username));
 					msg.put("project", projectService.getByUsername(username));
 					result.put("msg", JSON.toJSONString(msg));
@@ -97,7 +96,7 @@ public class UserAPI {
 
 	@RequestMapping(value="/loginError", method=RequestMethod.GET)
 	public Map<String, String> loginError() throws Exception{
-		Map<String, String> result = new HashMap<String, String>();
+		Map<String, String> result = new HashMap<String, String>(16);
 		result.put("msg","用户未登录");
 		result.put("code","0");
 		return result;

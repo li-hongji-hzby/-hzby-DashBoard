@@ -19,21 +19,20 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSONObject;
 import com.aliyun.hitsdb.client.value.response.QueryResult;
 
-import cn.hzby.lhj.util.TSDBUtils;
-
-@RequestMapping("/History")
-@RestController
-@CrossOrigin
+import cn.hzby.lhj.util.TsdbUtils;
 
 /**
  * @version: V1.0
  * @author: LHJ
- * @className: HistoryAPI
+ * @className: HistoryApi
  * @packageName: api
  * @description: 历史数据页API
  * @data: 2020-05-13 11:20
  **/
-public class HistoryAPI {
+@RequestMapping("/History")
+@RestController
+@CrossOrigin
+public class HistoryApi {
 	
 
 	/**
@@ -47,7 +46,7 @@ public class HistoryAPI {
 	*/
 	@RequestMapping(value="/getHistory",method =RequestMethod.POST)
 	public Map<String, Object> test(@RequestBody JSONObject jsonObj) throws Exception{
-		TSDBUtils tsdbUtils = new TSDBUtils();
+		TsdbUtils tsdbUtils = new TsdbUtils();
 		List<String> metricsList = new ArrayList<String>();
 		@SuppressWarnings("unchecked")
 		Map<String, Object> metricMap = (Map<String, Object>) jsonObj.get("metrics");
@@ -67,16 +66,16 @@ public class HistoryAPI {
 		qsStream.forEach( e -> {
 			// 日期格式化 
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
-			List<String> times= new ArrayList<>();
-			List<Integer> datas= new ArrayList<>();
+			List<String> timeList= new ArrayList<>();
+			List<Integer> dataList= new ArrayList<>();
 			Set<Entry<Long, Object>> entries = e.getDps().entrySet();
 			for(Entry<Long, Object> entry : entries) {
-				times.add(sdf.format(Long.valueOf(entry.getKey().toString())*1000));
-				datas.add((Double.valueOf(entry.getValue().toString())).intValue());
+				timeList.add(sdf.format(Long.valueOf(entry.getKey().toString())*1000));
+				dataList.add((Double.valueOf(entry.getValue().toString())).intValue());
 			}
 			List<Object> arrList = new ArrayList<>();
-			arrList.add(times);
-			arrList.add(datas);
+			arrList.add(timeList);
+			arrList.add(dataList);
 			result.put((String) metricMap.get(e.getMetric()), arrList);
 		});
 		return result;

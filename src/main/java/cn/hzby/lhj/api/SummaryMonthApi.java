@@ -8,23 +8,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import cn.hzby.lhj.po.SummaryDay;
-import cn.hzby.lhj.service.SummaryDayService;
+import cn.hzby.lhj.po.SummaryMonth;
+import cn.hzby.lhj.service.SummaryMonthService;
 
-
-@CrossOrigin
-@RestController
-@RequestMapping("/SummaryDay")
 /**
  * @author lhj
  */
-public class SummaryDayAPI {
+@CrossOrigin
+@RestController
+@RequestMapping("/SummaryMonth")
+public class SummaryMonthApi {
 
 	@Autowired
-	private SummaryDayService summaryDayService;
+	private SummaryMonthService summaryMonthService;
 	
 	@RequestMapping(value="/getNewestLimit")
-	public List<SummaryDay> getNewestLimit(@RequestParam("limit") Integer limit) throws Exception{
-		return summaryDayService.getNewestLimit(limit);
+	public List<SummaryMonth> getNewestLimit(@RequestParam("limit") Integer limit) throws Exception{
+		return summaryMonthService.getNewestLimit(limit);
 	}
 }

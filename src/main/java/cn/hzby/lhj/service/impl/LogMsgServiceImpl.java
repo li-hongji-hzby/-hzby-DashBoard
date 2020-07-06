@@ -9,6 +9,9 @@ import cn.hzby.lhj.mapper.extend.LogMsgMapperExtend;
 import cn.hzby.lhj.po.LogMsgWithBLOBs;
 import cn.hzby.lhj.service.LogMsgService;
 
+/**
+ * @author lhj
+ */
 @Service
 public class LogMsgServiceImpl implements LogMsgService {
 

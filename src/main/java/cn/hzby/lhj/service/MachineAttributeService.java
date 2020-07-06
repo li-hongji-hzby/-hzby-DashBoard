@@ -9,6 +9,14 @@ import cn.hzby.lhj.po.MachineAttribute;
 @Service
 public interface MachineAttributeService extends BaseService<MachineAttribute, Integer> {
 
-	// 根据ID批量查询属性
+    /**
+     * @version: V1.0
+     * @author:  LHJ
+     * @methodsName: listByIds
+     * @description: 根据ID批量查询属性
+     * @param: List<Integer> ids
+     * @return: List<MachineAttribute>
+     * @throws: Exception
+     */
     List<MachineAttribute> listByIds(List<Integer> ids) throws Exception;
 }

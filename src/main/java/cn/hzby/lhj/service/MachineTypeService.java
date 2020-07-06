@@ -6,9 +6,12 @@ import org.springframework.stereotype.Service;
 
 import cn.hzby.lhj.po.MachineType;
 
+/**
+ * @author lhj
+ */
 @Service
 public interface MachineTypeService extends BaseService<MachineType, Integer> {
 	
-	// 根据属性列表获取机器属性
+	/* 根据属性列表获取机器属性 */
     Map<String, Object> getAttributeList(Integer machineTypeId) throws Exception;
 }

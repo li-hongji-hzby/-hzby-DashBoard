@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 import cn.hzby.lhj.po.ProjectRealtimeMachine;
 import cn.hzby.lhj.po.ProjectRealtimeMachineKey;
 
+/**
+ * @author lhj
+ */
 @Service
 public interface ProjectRealtimeMachineService extends BaseService<ProjectRealtimeMachine, ProjectRealtimeMachineKey> {
 

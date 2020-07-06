@@ -11,10 +11,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import cn.hzby.lhj.util.JWTUtil;
+import cn.hzby.lhj.util.JwtUtil;
 
 
 
+/**
+ * @author lhj
+ */
 @Component
 public class LoginInterceptor implements HandlerInterceptor {
 
@@ -28,8 +31,8 @@ public class LoginInterceptor implements HandlerInterceptor {
         //如果session中没有user，表示没登陆
         if (cookies != null){
         	for(Cookie cookie : cookies){
-                if(cookie.getName().equals("userMsg")){
-                	Map<String, String> result = JWTUtil.checkJWT(cookie.getValue(),response);
+                if("userMsg".equals(cookie.getName())){
+                	Map<String, String> result = JwtUtil.checkJwt(cookie.getValue(),response);
                 	return Boolean.valueOf(result.get("code"));
                 }
             }

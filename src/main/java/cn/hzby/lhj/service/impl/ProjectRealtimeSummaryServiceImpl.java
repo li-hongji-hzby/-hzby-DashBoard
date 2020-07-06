@@ -11,6 +11,9 @@ import cn.hzby.lhj.po.ProjectRealtimeSummaryKey;
 import cn.hzby.lhj.po.ProjectRealtimeSummaryWithBLOBs;
 import cn.hzby.lhj.service.ProjectRealtimeSummaryService;
 
+/**
+ * @author lhj
+ */
 @Service
 public class ProjectRealtimeSummaryServiceImpl implements ProjectRealtimeSummaryService {
 

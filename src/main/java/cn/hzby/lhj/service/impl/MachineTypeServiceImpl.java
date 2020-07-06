@@ -51,7 +51,7 @@ public class MachineTypeServiceImpl implements MachineTypeService {
 	@Override
 	public Map<String, Object> getAttributeList(Integer machineTypeId) throws Exception {
 		// 根据属性列表获取机器属性
-		Map<String, Object> attributes = new HashMap<String, Object>();
+		Map<String, Object> attributes = new HashMap<String, Object>(16);
 		MachineType machineType = getById(machineTypeId);
 		List<Integer> machineAttributeIds = JSON.parseArray(machineType.getAttributeList(), Integer.class);
 		for(Integer id:machineAttributeIds) {

@@ -29,7 +29,7 @@ import cn.hzby.lhj.po.ProjectMainSummary;
  * @description: TSDB连接工具类
  * @data: 2020-05-13 11:20
  **/
-public class TSDBUtils {
+public class TsdbUtils {
 
 	private static final String ADDRESS = "ts-uf69c6a82riq43l53.hitsdb.rds.aliyuncs.com";
 	private static final int PORT = 3242;
@@ -50,16 +50,16 @@ public class TSDBUtils {
         // 构造查询条件并查询数据。
         // 查询一小时的数据
         Query query = new Query();
-    	List<SubQuery> SubQuerys = new ArrayList<SubQuery>();
+    	List<SubQuery> subQuerys = new ArrayList<SubQuery>();
         for(String metric: metrics) {
-        	SubQuerys.add(SubQuery.metric(metric)
+			subQuerys.add(SubQuery.metric(metric)
                     .aggregator(Aggregator.NONE)
                     .downsample(downsample)
                     .tag("device",device)
                     .build()); 
         }
         query = Query.timeRange(startTime, endTime)
-              .sub(SubQuerys)
+              .sub(subQuerys)
               .build();
         // 查询数据
         List<QueryResult> result = tsdb.query(query);
@@ -84,15 +84,15 @@ public class TSDBUtils {
         // 构造查询条件并查询数据。
         long time = 60*60*1000;
         Query query =new Query();
-    	List<SubQuery> SubQuerys = new ArrayList<SubQuery>();
+    	List<SubQuery> subQuerys = new ArrayList<SubQuery>();
         for(String metric: metrics) {
-        	SubQuerys.add(SubQuery.metric(metric)
+			subQuerys.add(SubQuery.metric(metric)
                     .aggregator(Aggregator.SUM)
                     .downsample("5m-avg")
                     .build()); 
         }
         query = Query.start(System.currentTimeMillis()- (hour*time))
-	        .sub(SubQuerys)
+	        .sub(subQuerys)
 	        .build();
 	    // 查询数据
         List<QueryResult> result = tsdb.query(query);
@@ -111,9 +111,9 @@ public class TSDBUtils {
         // 创建 TSDB 对象
         TSDBConfig config = TSDBConfig.address(ADDRESS, PORT).config();
         TSDB tsdb = TSDBClientFactory.connect(config);
-    	List<SubQuery> SubQuerys = new ArrayList<SubQuery>();
+    	List<SubQuery> subQuerys = new ArrayList<SubQuery>();
         for(String metric: metrics) {
-        	SubQuerys.add(SubQuery.metric(metric)
+			subQuerys.add(SubQuery.metric(metric)
                     .aggregator(Aggregator.SUM)
                     .tag("project", project)
                     .downsample(downsample + "-avg")
@@ -121,7 +121,7 @@ public class TSDBUtils {
         }
         // 构造查询条件并查询数据。
         Query query = Query.start(timestamp)
-                .sub(SubQuerys)
+                .sub(subQuerys)
                 .build(); //.downsample("10m-avg")
         // 查询数据
         List<QueryResult> result = tsdb.query(query);
@@ -176,9 +176,9 @@ public class TSDBUtils {
         Map<String, String> tags = new HashMap<String, String>(16);
         tags.put("device", device);
         tags.put("project", project);
-    	List<LastPointSubQuery> SubQuerys = new ArrayList<LastPointSubQuery>();
+    	List<LastPointSubQuery> subQuerys = new ArrayList<LastPointSubQuery>();
         for(String metric: metrics) {
-        	SubQuerys.add(LastPointSubQuery.builder(metric,tags)
+			subQuerys.add(LastPointSubQuery.builder(metric,tags)
                 		.build());
         }
         LastPointQuery query = LastPointQuery.builder()
@@ -191,7 +191,7 @@ public class TSDBUtils {
                 // 可以同时指定多个子查询
                 .sub(null)
                 .build();
-        query.setQueries(SubQuerys);
+        query.setQueries(subQuerys);
         List<LastDataValue> lastDataValues = tsdb.queryLast(query);
         tsdb.close();
         return lastDataValues;
@@ -205,7 +205,7 @@ public class TSDBUtils {
         List<LastPointSubQuery> subQuerys = new ArrayList<LastPointSubQuery>();
 		for (Map<String,String> queryMsg : queryMapList) {
         	subQuerys.add(LastPointSubQuery.builder(queryMsg.get("metric"),
-        			new HashMap<String, String>(){{
+        			new HashMap<String, String>(16){{
 					      put("device",queryMsg.get("device"));
 					      put("project",project);
 					}})
