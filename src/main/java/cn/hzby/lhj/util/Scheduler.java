@@ -4,13 +4,19 @@ package cn.hzby.lhj.util;
 
 
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
+import java.text.DecimalFormat;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
+import cn.hzby.lhj.po.Project;
+import cn.hzby.lhj.po.ProjectRealtimeSummaryWithBLOBs;
+import cn.hzby.lhj.service.ProjectRealtimeSummaryService;
+import cn.hzby.lhj.service.ProjectService;
+import com.aliyun.hitsdb.client.value.response.LastDataValue;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -42,6 +48,13 @@ public class Scheduler {
     @Resource
     private ProjectMainHistoryService projectMainHistoryService;
 
+	@Resource
+	private ProjectRealtimeSummaryService projectRealtimeSummaryService;
+
+	@Resource
+	private ProjectService projectService;
+
+
 	@SuppressWarnings("serial")
 	@Scheduled(fixedRate=10000)
 	public void testTasks1() throws Exception {
@@ -72,6 +85,35 @@ public class Scheduler {
 					e1.printStackTrace();
 				}
 			});
+		});
+		/* 处理实时数据页数据总和 */
+		List<Project> projectList = projectService.listAll().stream().collect(Collectors.collectingAndThen(Collectors.toCollection(()->new TreeSet<>(Comparator.comparing(Project::getProjectNameEn))), ArrayList::new));
+		List<Map<String, String>> queryMapList = new ArrayList<Map<String,String>>();
+		projectList.parallelStream().forEach( project -> {
+			try {
+				List<ProjectRealtimeSummaryWithBLOBs> realTimeSummaryList = projectRealtimeSummaryService.getByProject(project.getProjectNameEn());
+				realTimeSummaryList.stream().forEach(e -> {
+					JSON.parseArray(e.getMachineList(), String.class).parallelStream().forEach( f -> {
+						queryMapList.add(new HashMap<String, String>(16){{
+							put("metric",e.getAttribute());
+							put("device",f);
+						}});
+					});
+				});
+				TsdbUtils tsdbUtils  = new TsdbUtils();
+				Map<String, List<LastDataValue>> a = tsdbUtils.getRealtimeSummary(queryMapList,project.getProjectNameEn()).stream().collect(Collectors.groupingBy(LastDataValue::getMetric));
+				Map<String,Double> sumMap = new HashMap<String, Double>(16);
+				a.keySet().forEach( e-> sumMap.put(e, a.get(e).stream().mapToDouble(p -> (Double.valueOf(new DecimalFormat("#.00").format(p.getValue()))))
+							.sum()));
+				Map<String,Double> resultMap = new HashMap<String, Double>(16);
+				realTimeSummaryList.parallelStream().forEach(e -> resultMap.put(e.getDataName(), sumMap.get(e.getAttribute())));
+				resultMap.put("单耗", Double.valueOf(new DecimalFormat("#.00").format(resultMap.get("功率")/resultMap.get("流量"))));
+				redisUtil.hmset(project.getProjectNameEn(), new HashMap<String, Object>(16) {{
+					put("RealTimeSummary",JSON.toJSONString(resultMap));
+				}});
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		});
 	}
 

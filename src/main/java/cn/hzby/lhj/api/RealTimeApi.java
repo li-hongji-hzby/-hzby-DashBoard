@@ -27,7 +27,6 @@ import com.aliyun.hitsdb.client.value.response.LastDataValue;
 import cn.hzby.lhj.po.MachineStatus;
 import cn.hzby.lhj.po.Project;
 import cn.hzby.lhj.po.ProjectRealtimeMachineKey;
-import cn.hzby.lhj.po.ProjectRealtimeSummaryWithBLOBs;
 import cn.hzby.lhj.service.MachineStatusService;
 import cn.hzby.lhj.service.ProjectRealtimeMachineService;
 import cn.hzby.lhj.service.ProjectRealtimeSummaryService;
@@ -51,8 +50,6 @@ public class RealTimeApi {
 	private MachineStatusService machineStatusService;
 	@Autowired
 	private ProjectRealtimeMachineService projectRealtimeMachineService;
-	@Autowired
-	private ProjectRealtimeSummaryService projectRealtimeSummaryService;
 
     @Resource
     private RedisUtil redisUtil;
@@ -111,27 +108,9 @@ public class RealTimeApi {
 	*/
 	@SuppressWarnings("serial")
 	@RequestMapping(value = "/getRealtimeSummary",method = RequestMethod.POST)
-	public Map<String, Double> getRealtimeSummary(@RequestBody JSONObject jsonObj) throws Exception{
+	public String getRealtimeSummary(@RequestBody JSONObject jsonObj) throws Exception{
 		Project project = JSON.parseObject(JSON.toJSONString(jsonObj.get("project")), Project.class);
-		List<Map<String, String>> queryMapList = new ArrayList<Map<String,String>>();
-		List<ProjectRealtimeSummaryWithBLOBs> summaryList = projectRealtimeSummaryService.getByProject((String) ((Map<?, ?>)jsonObj.get("project")).get("projectNameEn"));
-		summaryList.parallelStream().forEach( e -> {
-			JSON.parseArray(e.getMachineList(), String.class).parallelStream().forEach( f -> {
-				queryMapList.add(new HashMap<String, String>(16){{
-				      put("metric",e.getAttribute());  
-				      put("device",f);
-				}});
-			}); 
-		});
-		TsdbUtils tsdbUtils  = new TsdbUtils();
-		Map<String, List<LastDataValue>> a = (tsdbUtils.getRealtimeSummary(queryMapList,project.getProjectNameEn()).stream().collect(Collectors.groupingBy(LastDataValue::getMetric)));
-		Map<String,Double> sumMap = new HashMap<String, Double>(16);
-		a.keySet().forEach( e-> sumMap.put(e, a.get(e).stream().mapToDouble(p -> (Double.valueOf(new DecimalFormat("#.00").format(p.getValue()))))
-		         .sum()));
-		Map<String,Double> resultMap = new HashMap<String, Double>(16);
-		summaryList.parallelStream().forEach(e -> resultMap.put(e.getDataName(), sumMap.get(e.getAttribute())));
-		resultMap.put("单耗", Double.valueOf(new DecimalFormat("#.00").format(resultMap.get("功率")/resultMap.get("流量"))));
-		return resultMap;
+		return redisUtil.hget( project.getProjectNameEn(),"RealTimeSummary").toString();
 	}
 
 
