@@ -36,21 +36,23 @@ public class JWTUtil {
 	public static String setJWT(String id, String msg ,Integer time) {
 	    long now = System.currentTimeMillis();//当前时间 
 	    long exp = now + time;//过期时间为3秒
+//	    System.out.println(exp);
+//	    System.out.println(new Date(exp));
 		JwtBuilder builder = Jwts.builder().setId(id).setSubject(msg).setIssuedAt(new Date())// 设置签发时间
 				.signWith(SignatureAlgorithm.HS256, "evil-scream")
 		        .setExpiration(new Date(exp));//设置过期时间;// 设置签名秘钥
-//		System.out.println(builder.compact());
 		return builder.compact();
 	}
 	
 	public static Map<String,String> checkJWT(String jwt, HttpServletResponse response) {
 		Map<String,String> result = new HashMap<String, String>();
+//		System.out.println(jwt);
 		try {
 			Claims claims =Jwts.parser().setSigningKey("evil-scream").parseClaimsJws(jwt).getBody();
 			SimpleDateFormat sdf=new SimpleDateFormat("yyyy‐MM‐dd hh:mm:ss");
-			System.out.println("签发时间:"+sdf.format(claims.getIssuedAt()));
-			System.out.println("过期时间:"+sdf.format(claims.getExpiration()));
-			System.out.println("当前时间:"+sdf.format(new Date()) );
+//			System.out.println("签发时间:"+sdf.format(claims.getIssuedAt()));
+//			System.out.println("过期时间:"+sdf.format(claims.getExpiration()));
+//			System.out.println("当前时间:"+sdf.format(new Date()) );
 			result.put("msg","JWT验证通过");
 			result.put("code", "true");
 		} catch (ExpiredJwtException e) {
@@ -64,6 +66,7 @@ public class JWTUtil {
 			result.put("code", "false");
 			response.setStatus(401);
 		}
+//		System.out.println(result);
 		return result;
 	}
 }

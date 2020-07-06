@@ -59,7 +59,7 @@ public class UserAPI {
 			user = userSrvice.getById(username);
 			if(user!=null) {
 				if(user.getPassword().equals(EncryptUtil.getSHA256Str(password)) && user.getStatus()) {
-					String JWTString = JWTUtil.setJWT(user.getUsername(), user.getUsername(), 1000*60*2880);
+					String JWTString = JWTUtil.setJWT(user.getUsername(), user.getUsername(), 1000*60*2880*7);
 					Map<String, Object> msg = new HashMap<String, Object>();
 					msg.put("user", username);
 					msg.put("jwt", JWTString);

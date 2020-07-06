@@ -24,12 +24,10 @@ public class LoginInterceptor implements HandlerInterceptor {
         //每一个项目对于登陆的实现逻辑都有所区别，我这里使用最简单的Session提取User来验证登陆。
 
     	Cookie[] cookies =  request.getCookies();
-    	
         //如果session中没有user，表示没登陆
         if (cookies != null){
         	for(Cookie cookie : cookies){
                 if(cookie.getName().equals("userMsg")){
-                	System.out.println(cookie.getValue());
                 	Map<String, String> result = JWTUtil.checkJWT(cookie.getValue(),response);
                 	return Boolean.valueOf(result.get("code"));
                 }
