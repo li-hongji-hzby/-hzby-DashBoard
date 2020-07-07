@@ -4,6 +4,9 @@ import org.springframework.stereotype.Service;
 
 import cn.hzby.lhj.po.RealtimeAirCompressor;
 
+/**
+ * @author lhj
+ */
 @Service
 public interface RealtimeAirCompressorService extends BaseService<RealtimeAirCompressor, String>{
 

@@ -10,6 +10,9 @@ import cn.hzby.lhj.po.ProjectMainSummary;
 import cn.hzby.lhj.po.ProjectMainSummaryKey;
 import cn.hzby.lhj.service.ProjectMainSummaryService;
 
+/**
+ * @author lhj
+ */
 @Service
 public class ProjectMainSummaryServiceImpl implements ProjectMainSummaryService {
 

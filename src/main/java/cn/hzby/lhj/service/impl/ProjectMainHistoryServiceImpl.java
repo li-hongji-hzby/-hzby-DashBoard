@@ -10,6 +10,9 @@ import cn.hzby.lhj.po.ProjectMainHistory;
 import cn.hzby.lhj.po.ProjectMainHistoryKey;
 import cn.hzby.lhj.service.ProjectMainHistoryService;
 
+/**
+ * @author lhj
+ */
 @Service
 public class ProjectMainHistoryServiceImpl implements ProjectMainHistoryService {
 

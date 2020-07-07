@@ -12,6 +12,9 @@ import cn.hzby.lhj.po.ProjectRealtimeMachineKey;
 import cn.hzby.lhj.service.MachineAttributeService;
 import cn.hzby.lhj.service.ProjectHistoryMachineService;
 
+/**
+ * @author lhj
+ */
 @Service
 public class ProjectHistoryMachineServiceImpl implements ProjectHistoryMachineService {
 
@@ -40,8 +43,13 @@ public class ProjectHistoryMachineServiceImpl implements ProjectHistoryMachineSe
 	public int removeById(ProjectHistoryMachineKey id) throws Exception {
 		return projectHistoryMachineMapper.deleteByPrimaryKey(id);
 	}
-	
-	// 根据项目查询历史数据页机器
+
+	/**
+	 * 根据项目查询历史数据页机器
+	 * @param project
+	 * @return
+	 * @throws Exception
+	 */
 	@Override
 	public List<ProjectHistoryMachine> listByProjectIsshow(String project) throws Exception {
 		ProjectRealtimeMachineKey key = new ProjectRealtimeMachineKey();

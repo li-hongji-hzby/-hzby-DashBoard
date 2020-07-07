@@ -9,6 +9,9 @@ import cn.hzby.lhj.mapper.extend.RealtimeAirCompressorMapperExtend;
 import cn.hzby.lhj.po.RealtimeAirCompressor;
 import cn.hzby.lhj.service.RealtimeAirCompressorService;
 
+/**
+ * @author lhj
+ */
 @Service
 public class RealtimeAirCompressorServiceImpl implements RealtimeAirCompressorService {
 

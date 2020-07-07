@@ -9,6 +9,9 @@ import cn.hzby.lhj.mapper.extend.UserMapperExtend;
 import cn.hzby.lhj.po.User;
 import cn.hzby.lhj.service.UserService;
 
+/**
+ * @author lhj
+ */
 @Service
 public class UserServiceImpl implements UserService {
 

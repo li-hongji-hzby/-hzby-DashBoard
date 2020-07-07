@@ -9,6 +9,9 @@ import cn.hzby.lhj.mapper.extend.SummaryHourMapperExtend;
 import cn.hzby.lhj.po.SummaryHour;
 import cn.hzby.lhj.service.SummaryHourService;
 
+/**
+ * @author lhj
+ */
 @Service
 public class SummaryHourServiceImpl implements SummaryHourService {
 

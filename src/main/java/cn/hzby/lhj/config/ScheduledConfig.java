@@ -13,9 +13,11 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
  * @description: 多线程执行定时任务
  * @data: 2020-05-25 13:20
  **/
+/**
+ * 所有的定时任务都放在一个线程池中，定时任务启动时使用不同都线程
+ * 线程池应该交给容器管理，可以不用实现SchedulingConfigurer接口
+ * */
 @Configuration
-//所有的定时任务都放在一个线程池中，定时任务启动时使用不同都线程。
-//线程池应该交给容器管理，可以不用实现SchedulingConfigurer接口
 public class ScheduledConfig{
 	@Bean
     public TaskScheduler taskScheduler() {

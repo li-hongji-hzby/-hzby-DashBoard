@@ -13,6 +13,9 @@ import cn.hzby.lhj.service.ProjectHistoryMachineService;
 import cn.hzby.lhj.service.ProjectRealtimeMachineService;
 import cn.hzby.lhj.service.ProjectService;
 
+/**
+ * @author lhj
+ */
 @Service
 public class ProjectServiceImpl implements ProjectService {
 
@@ -45,7 +48,12 @@ public class ProjectServiceImpl implements ProjectService {
 		return 0;
 	}
 
-	// 根据用户查找对应项目
+	/**
+	 * 根据用户查找对应项目
+	 * @param username
+	 * @return
+	 * @throws Exception
+	 */
 	@Override
 	public Project getByUsername(String username) throws Exception {
 		ProjectExample example = new ProjectExample();
@@ -54,7 +62,12 @@ public class ProjectServiceImpl implements ProjectService {
 		return projectMapper.selectByExample(example).get(0);
 	}
 
-	// 根据项目获取项目及页面配置
+	/**
+	 * 根据项目获取项目及页面配置
+	 * @param username
+	 * @return
+	 * @throws Exception
+	 */
 	@Override
 	public Map<String, Object> getProjectConfigByUser(String username) throws Exception {
 		ProjectExample example = new ProjectExample();

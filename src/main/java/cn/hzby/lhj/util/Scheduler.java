@@ -54,6 +54,8 @@ public class Scheduler {
 	@Resource
 	private ProjectService projectService;
 
+	private static final String FLOWRATE = "flowrate";
+	private static final String P = "P";
 
 	@SuppressWarnings("serial")
 	@Scheduled(fixedRate=10000)
@@ -61,12 +63,12 @@ public class Scheduler {
 		List<ProjectMainSummary> summaryList = projectMainSummaryService.listAll();
 		Map<String, Map<String, Double>> result =  TsdbUtils.getMainSummary(summaryList);
 		result.keySet().forEach( e -> {
-			if(result.get(e).get("flowrate")>0 && result.get(e).get("P")>0) {
+			if(result.get(e).get(FLOWRATE)>0 && result.get(e).get(P)>0) {
 				redisUtil.hmset(e, new HashMap<String,Object>(16) {{
 					put("summary",JSON.toJSONString(new HashMap<String,Double>(16){{
-						put("气",Double.parseDouble(String.format("%.2f",result.get(e).get("flowrate"))));
-						put("电",Double.parseDouble(String.format("%.2f",result.get(e).get("P"))));
-						put("单耗",Double.parseDouble(String.format("%.2f",result.get(e).get("P")/(result.get(e).get("flowrate")*60))));
+						put("气",Double.parseDouble(String.format("%.2f",result.get(e).get(FLOWRATE))));
+						put("电",Double.parseDouble(String.format("%.2f",result.get(e).get(P))));
+						put("单耗",Double.parseDouble(String.format("%.2f",result.get(e).get(P)/(result.get(e).get(FLOWRATE)*60))));
 					}}));
 				}});
 			}

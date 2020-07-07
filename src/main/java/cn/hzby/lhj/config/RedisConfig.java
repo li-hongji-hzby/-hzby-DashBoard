@@ -20,7 +20,6 @@ import cn.hzby.lhj.util.FastJsonRedisSerializer;
  * @author lhj
  */
 @Configuration
-//开启注解
 @EnableCaching
 public class RedisConfig extends CachingConfigurerSupport {
 

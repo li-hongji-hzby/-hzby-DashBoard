@@ -17,6 +17,9 @@ import cn.hzby.lhj.po.MachineType;
 import cn.hzby.lhj.service.MachineAttributeService;
 import cn.hzby.lhj.service.MachineTypeService;
 
+/**
+ * @author lhj
+ */
 @Service
 public class MachineTypeServiceImpl implements MachineTypeService {
 

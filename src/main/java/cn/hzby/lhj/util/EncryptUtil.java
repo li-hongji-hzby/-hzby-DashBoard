@@ -7,6 +7,9 @@ import java.security.NoSuchAlgorithmException;
 
 import org.apache.commons.codec.binary.Hex;
 
+/**
+ * @author lhj
+ */
 public class EncryptUtil {
 	/***
 	* 利用Apache的工具类实现SHA-256加密

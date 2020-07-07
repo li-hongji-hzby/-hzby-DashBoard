@@ -5,6 +5,9 @@ import java.io.Serializable;
 import com.alibaba.fastjson.annotation.JSONType;
 
 
+/**
+ * @author lhj
+ */
 @JSONType(orders={"timestamp","electricity","air","unitCost"})
 public class HomeCardVo implements Serializable{
 	

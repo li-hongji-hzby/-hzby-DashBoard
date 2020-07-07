@@ -9,6 +9,9 @@ import cn.hzby.lhj.mapper.extend.MachineStatusMapperExtend;
 import cn.hzby.lhj.po.MachineStatus;
 import cn.hzby.lhj.service.MachineStatusService;
 
+/**
+ * @author lhj
+ */
 @Service
 public class MachineStatusServiceImpl implements MachineStatusService {
 

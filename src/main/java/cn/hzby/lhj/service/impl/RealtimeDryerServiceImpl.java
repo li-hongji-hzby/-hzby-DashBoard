@@ -9,6 +9,9 @@ import cn.hzby.lhj.mapper.extend.RealtimeDryerMapperExtend;
 import cn.hzby.lhj.po.RealtimeDryer;
 import cn.hzby.lhj.service.RealtimeDryerService;
 
+/**
+ * @author lhj
+ */
 @Service
 public class RealtimeDryerServiceImpl implements RealtimeDryerService {
 

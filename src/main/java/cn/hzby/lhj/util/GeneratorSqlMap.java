@@ -9,6 +9,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author lhj
+ */
 public class GeneratorSqlMap {
 
 	public void generator() throws Exception {

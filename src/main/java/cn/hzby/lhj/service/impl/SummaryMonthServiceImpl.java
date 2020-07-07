@@ -9,6 +9,9 @@ import cn.hzby.lhj.mapper.extend.SummaryMonthMapperExtend;
 import cn.hzby.lhj.po.SummaryMonth;
 import cn.hzby.lhj.service.SummaryMonthService;
 
+/**
+ * @author lhj
+ */
 @Service
 public class SummaryMonthServiceImpl implements SummaryMonthService {
 

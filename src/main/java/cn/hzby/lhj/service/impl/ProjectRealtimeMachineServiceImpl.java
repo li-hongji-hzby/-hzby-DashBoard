@@ -48,7 +48,12 @@ public class ProjectRealtimeMachineServiceImpl implements ProjectRealtimeMachine
 		return projectRealtimeMachineMapper.deleteByPrimaryKey(id);
 	}
 
-	// 根据项目查询实时数据页机器
+	/**
+	 * 根据项目查询实时数据页机器
+	 * @param project
+	 * @return
+	 * @throws Exception
+	 */
 	@Override
 	public Map<String, List<ProjectRealtimeMachine>> listByProjectIsshow(String project) throws Exception {
 		ProjectRealtimeMachineKey key = new ProjectRealtimeMachineKey();

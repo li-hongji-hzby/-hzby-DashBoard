@@ -9,6 +9,9 @@ import org.springframework.data.redis.serializer.SerializationException;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 
+/**
+ * @author lhj
+ */
 public class FastJsonRedisSerializer<T> implements RedisSerializer<T> {
  
     public static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;

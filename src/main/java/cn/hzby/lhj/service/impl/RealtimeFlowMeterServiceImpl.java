@@ -9,6 +9,9 @@ import cn.hzby.lhj.mapper.extend.RealtimeFlowMeterMapperExtend;
 import cn.hzby.lhj.po.RealtimeFlowMeter;
 import cn.hzby.lhj.service.RealtimeFlowMeterService;
 
+/**
+ * @author lhj
+ */
 @Service
 public class RealtimeFlowMeterServiceImpl implements RealtimeFlowMeterService {
 
