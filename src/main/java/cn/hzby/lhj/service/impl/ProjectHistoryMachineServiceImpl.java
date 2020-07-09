@@ -1,14 +1,14 @@
 package cn.hzby.lhj.service.impl;
 
 import java.util.List;
+
+import cn.hzby.lhj.mapper.extend.MachineAttributeMapperExtend;
+import cn.hzby.lhj.po.*;
+import com.alibaba.fastjson.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSON;
 import cn.hzby.lhj.mapper.extend.ProjectHistoryMachineMapperExtend;
-import cn.hzby.lhj.po.ProjectHistoryMachine;
-import cn.hzby.lhj.po.ProjectHistoryMachineExample;
-import cn.hzby.lhj.po.ProjectHistoryMachineKey;
-import cn.hzby.lhj.po.ProjectRealtimeMachineKey;
 import cn.hzby.lhj.service.MachineAttributeService;
 import cn.hzby.lhj.service.ProjectHistoryMachineService;
 
@@ -67,5 +67,17 @@ public class ProjectHistoryMachineServiceImpl implements ProjectHistoryMachineSe
 			}
 		});
 		return machineList;
+	}
+
+	/**
+	 * 根据机器查询属性列表
+	 * @param id
+	 * @return List<ProjectHistoryMachine>
+	 * @throws Exception
+	 */
+	@Override
+	public List<MachineAttribute> listAttributesByMachineAndProject(ProjectHistoryMachineKey id) throws Exception {
+		ProjectHistoryMachine machine = getById(id);
+		return machineAttributeService.listByIds(JSONArray.parseArray(machine.getAttributeList(), Integer.class));
 	}
 }

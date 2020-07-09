@@ -20,6 +20,8 @@ import cn.hzby.lhj.service.UserService;
 import cn.hzby.lhj.util.EncryptUtil;
 import cn.hzby.lhj.util.JwtUtil;
 
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * @version: V1.0
  * @author: lhj
@@ -58,7 +60,7 @@ public class UserApi {
 	}
 	
 	@RequestMapping(value="/login", method=RequestMethod.POST)
-	public Map<String, String> login(@RequestBody JSONObject getJson) throws Exception{
+	public Map<String, String> login(@RequestBody JSONObject getJson,HttpServletResponse response) throws Exception{
 		Map<String, String> result = new HashMap<String, String>(16);
 		User user = new User();
 		String username = getJson.getString("username");
@@ -78,18 +80,22 @@ public class UserApi {
 				}else if(!user.getStatus()){
 					result.put("msg", "登录失败,用户未激活 ");
 					result.put("code","0");
+					response.setStatus(409);
 				}else{
 					result.put("msg", "登录失败,密码错误");
 					result.put("code","0");
+					response.setStatus(409);
 				}
 			}else {
 				result.put("msg", "登录失败,用户不存在");
 				result.put("code","0");
+				response.setStatus(409);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			result.put("msg", "登录失败");
 			result.put("code","0");
+			response.setStatus(409);
 		}
 		return result;
 	}

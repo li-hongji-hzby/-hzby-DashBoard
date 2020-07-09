@@ -170,8 +170,7 @@ public class HomeApi {
 		TsdbUtils tsdbUtils = new TsdbUtils();
 		List<QueryResult> qs = tsdbUtils.getByTimeAndDownSample(timestamp,downsample,porject,metrics);
 		Set<Entry<Long, Object>> entrys = qs.get(0).getDps().entrySet();
-		Map<Long, Object> airDatas = new HashMap<Long,Object>(16);
-		airDatas = qs.get(1).getDps();
+		Map<Long, Object> airDatas = qs.get(1).getDps();
 		List<HomeCardVo> hcVoList = new ArrayList<>();
 		DecimalFormat df = new DecimalFormat("#");
 		DecimalFormat df2 = new DecimalFormat("#.0000");

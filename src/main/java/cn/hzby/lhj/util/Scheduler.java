@@ -66,7 +66,7 @@ public class Scheduler {
 			if(result.get(e).get(FLOWRATE)>0 && result.get(e).get(P)>0) {
 				redisUtil.hmset(e, new HashMap<String,Object>(16) {{
 					put("summary",JSON.toJSONString(new HashMap<String,Double>(16){{
-						put("气",Double.parseDouble(String.format("%.2f",result.get(e).get(FLOWRATE))));
+						put("气",Double.parseDouble(String.format("%.2f",result.get(e).get(FLOWRATE)*60)));
 						put("电",Double.parseDouble(String.format("%.2f",result.get(e).get(P))));
 						put("单耗",Double.parseDouble(String.format("%.2f",result.get(e).get(P)/(result.get(e).get(FLOWRATE)*60))));
 					}}));

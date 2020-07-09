@@ -68,6 +68,36 @@ public class TsdbUtils {
         return result;
     }
 	
+	/**
+	* @author:  LHJ
+	* @methodsName: getData
+	* @description: 根据开始、结束时间获取单个数据
+	* @param: Long startTime, Long endTime,String device, String downsample,List<String> metrics
+	* @return: List<QueryResult>
+	* @throws: 
+	*/
+	public List<QueryResult> getData(Long startTime, Long endTime,String device, String downsample,String metric) throws IOException {  //  ,String machine
+        // 创建 TSDB 对象
+        TSDBConfig config = TSDBConfig.address(ADDRESS, PORT).config();
+        TSDB tsdb = TSDBClientFactory.connect(config);
+        // 构造查询条件并查询数据。
+        // 查询一小时的数据
+        Query query = new Query();
+    	List<SubQuery> subQuerys = new ArrayList<SubQuery>();
+		subQuerys.add(SubQuery.metric(metric)
+                .aggregator(Aggregator.NONE)
+                .downsample(downsample)
+                .tag("device",device)
+                .build()); 
+        query = Query.timeRange(startTime, endTime)
+              .sub(subQuerys)
+              .build();
+        // 查询数据
+        List<QueryResult> result = tsdb.query(query);
+        // 安全关闭客户端，以防数据丢失。
+        tsdb.close();
+        return result;
+    }
 
 	/**
 	* @author:  LHJ

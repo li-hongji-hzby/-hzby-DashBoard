@@ -32,17 +32,22 @@ public class HistoryApi {
 
 
 	/**
-	* @description: 从TSDB获取历史数据页数据
-	*/
+	 * 从TSDB获取历史数据页数据
+	 * @param jsonObj
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value="/getHistory",method =RequestMethod.POST)
 	public Map<String, Object> getHistory(@RequestBody JSONObject jsonObj) throws Exception{
 		TsdbUtils tsdbUtils = new TsdbUtils();
 		List<String> metricsList = new ArrayList<>();
 		@SuppressWarnings("unchecked")
-		Map<String, Object> metricMap = (Map<String, Object>) jsonObj.get("metrics");
+		Map<String, Object> metricMap = (Map<String, Object>) jsonObj.get("metric");
 		for (Entry<?, ?> metricEntry : metricMap.entrySet()) {
 			metricsList.add((String)metricEntry.getKey());
 		}
+		System.out.println(metricsList);
+		System.out.println(metricMap);
 		// 调用方法从TSDB获取数据
 		List<QueryResult> queryResult = tsdbUtils.getData(Long.valueOf((Integer)jsonObj.get("startTime"))
 				, Long.valueOf((Integer) jsonObj.get("endTime"))
