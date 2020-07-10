@@ -7,6 +7,8 @@ public class Project {
 
     private String username;
 
+    private Integer isDefault;
+
     public String getProjectNameEn() {
         return projectNameEn;
     }
@@ -29,5 +31,13 @@ public class Project {
 
     public void setUsername(String username) {
         this.username = username == null ? null : username.trim();
+    }
+
+    public Integer getIsDefault() {
+        return isDefault;
+    }
+
+    public void setIsDefault(Integer isDefault) {
+        this.isDefault = isDefault;
     }
 }

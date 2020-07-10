@@ -46,12 +46,12 @@
 		<table tableName="machine_type"></table>
 		<table tableName="machine_attribute"></table> 
 		<table tableName="log_msg"></table>
-		<table tableName="project"></table>
 		<table tableName="project_history_machine"></table>
 		<table tableName="machine_status"></table>
 		<table tableName="project_realtime_machine"></table>
 		<table tableName="project_realtime_summary"></table>
-		<table tableName="project_main_summary"></table>-->
-		<table tableName="project_main_history"></table>
+		<table tableName="project_main_summary"></table>
+		<table tableName="project_main_history"></table>-->
+		<table tableName="project"></table>
 	</context>
 </generatorConfiguration>
