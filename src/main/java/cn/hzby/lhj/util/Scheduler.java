@@ -64,9 +64,9 @@ public class Scheduler {
 			if(result.get(e).get(FLOWRATE)>0 && result.get(e).get(P)>0) {
 				redisUtil.hmset(e, new HashMap<String,Object>(16) {{
 					put("summary",JSON.toJSONString(new HashMap<String,Double>(16){{
-						put("气",Double.parseDouble(String.format("%.2f",result.get(e).get(FLOWRATE)*60)));
-						put("电",Double.parseDouble(String.format("%.2f",result.get(e).get(P))));
-						put("单耗",Double.parseDouble(String.format("%.2f",result.get(e).get(P)/(result.get(e).get(FLOWRATE)*60))));
+						put("气",Double.parseDouble(String.format("%.0f",result.get(e).get(FLOWRATE)*60)));
+						put("电",Double.parseDouble(String.format("%.0f",result.get(e).get(P))));
+						put("单耗",Double.parseDouble(String.format("%.3f",result.get(e).get(P)/(result.get(e).get(FLOWRATE)*60))));
 					}}));
 				}});
 			}
@@ -107,7 +107,7 @@ public class Scheduler {
 							.sum()));
 				Map<String,Double> resultMap = new HashMap<String, Double>(16);
 				realTimeSummaryList.parallelStream().forEach(e -> resultMap.put(e.getDataName(), sumMap.get(e.getAttribute())));
-				resultMap.put("单耗", Double.valueOf(new DecimalFormat("#.00").format(resultMap.get("功率")/resultMap.get("流量"))));
+				resultMap.put("单耗", Double.valueOf(new DecimalFormat("#.00").format(resultMap.get("功率")/(resultMap.get("流量")*60))));
 				redisUtil.hmset(project.getProjectNameEn(), new HashMap<String, Object>(16) {{
 					put("RealTimeSummary",JSON.toJSONString(resultMap));
 				}});

@@ -1,6 +1,8 @@
 package cn.hzby.lhj.api;
 
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,14 +48,13 @@ public class HistoryApi {
 		for (Entry<?, ?> metricEntry : metricMap.entrySet()) {
 			metricsList.add((String)metricEntry.getKey());
 		}
-		System.out.println(metricsList);
-		System.out.println(metricMap);
 		// 调用方法从TSDB获取数据
 		List<QueryResult> queryResult = tsdbUtils.getData(Long.valueOf((Integer)jsonObj.get("startTime"))
 				, Long.valueOf((Integer) jsonObj.get("endTime"))
 				, (String) jsonObj.get("device")
 				, (String)jsonObj.get("downsample")
 				, metricsList);
+		System.out.println(jsonObj.get("downsample"));
 		Map<String, Object> result = new HashMap<>(16);
 		Stream<QueryResult> qsStream = queryResult.parallelStream();
 		// 转换数据格式并重新封装
@@ -62,11 +63,11 @@ public class HistoryApi {
 			// 日期格式化
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
 			List<String> timeList= new ArrayList<>();
-			List<Integer> dataList= new ArrayList<>();
+			List<String> dataList= new ArrayList<>();
 			Set<Entry<Long, Object>> entries = e.getDps().entrySet();
 			for(Entry<Long, Object> entry : entries) {
 				timeList.add(sdf.format(Long.valueOf(entry.getKey().toString())*1000));
-				dataList.add((Double.valueOf(entry.getValue().toString())).intValue());
+				dataList.add(new DecimalFormat("#.00").format(entry.getValue()));
 			}
 			List<Object> arrList = new ArrayList<>();
 			arrList.add(timeList);
