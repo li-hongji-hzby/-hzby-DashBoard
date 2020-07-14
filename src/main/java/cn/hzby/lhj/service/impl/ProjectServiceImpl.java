@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.validation.constraints.Size;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import cn.hzby.lhj.mapper.extend.ProjectMapperExtend;
@@ -55,29 +57,66 @@ public class ProjectServiceImpl implements ProjectService {
 	 * @throws Exception
 	 */
 	@Override
-	public Project getByUsername(String username) throws Exception {
+	public Project getDefaultProjectByUsername(String username) throws Exception {
 		ProjectExample example = new ProjectExample();
 		ProjectExample.Criteria criteria = example.createCriteria();
 		criteria.andUsernameEqualTo(username);
+		criteria.andIsDefaultEqualTo(1);
 		return projectMapper.selectByExample(example).get(0);
 	}
 
 	/**
-	 * 根据项目获取项目及页面配置
+	 * 根据用户获取项目及页面配置
 	 * @param username
 	 * @return
 	 * @throws Exception
 	 */
 	@Override
-	public Map<String, Object> getProjectConfigByUser(String username) throws Exception {
+	public Map<String, Object> getDefaultProjectConfigByUser(String username) throws Exception {
 		ProjectExample example = new ProjectExample();
 		ProjectExample.Criteria criteria = example.createCriteria();
 		criteria.andUsernameEqualTo(username);
-		Project project = projectMapper.selectByExample(example).get(0);
+		criteria.andIsDefaultEqualTo(1);
+		List<Project> projectList = projectMapper.selectByExample(example);
+		System.out.println(projectList.size());
+		Project project = projectList.get(0);
 		Map<String,Object> result = new HashMap<String,Object>(16);
 		result.put("realtimePage", projectRealtimeMachineService.listByProjectIsshow(project.getProjectNameEn()));
 		result.put("historyPage", projectHistoryMachineService.listByProjectIsshow(project.getProjectNameEn()));
 		return result;
 	}
 
+
+	/**
+	 * 根据用户获取所有项目
+	 * @param username
+	 * @return
+	 * @throws Exception
+	 */
+	@Override
+	public Map<String, Object> listProjectByUser(String username) throws Exception {
+		ProjectExample example = new ProjectExample();
+		ProjectExample.Criteria criteria = example.createCriteria();
+		criteria.andUsernameEqualTo(username);
+		List<Project> projectList = projectMapper.selectByExample(example);
+		Map<String, Object> projectMap = new HashMap<>(16);
+		projectList.parallelStream().forEach( e -> {
+			projectMap.put(e.getProjectNameZh(), e.getProjectNameEn());
+		});
+		return projectMap;
+	}
+	
+	/**
+	 * 根据项目获取配置
+	 * @param username
+	 * @return
+	 * @throws Exception
+	 */
+	@Override
+	public Map<String, Object> getConfigByProject(String project) throws Exception{
+		Map<String,Object> result = new HashMap<String,Object>(16);
+		result.put("realtimePage", projectRealtimeMachineService.listByProjectIsshow(project));
+		result.put("historyPage", projectHistoryMachineService.listByProjectIsshow(project));
+		return result;
+	}
 }

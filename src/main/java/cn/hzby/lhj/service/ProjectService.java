@@ -19,7 +19,7 @@ public interface ProjectService extends BaseService<Project, String> {
      * @return
      * @throws Exception
      */
-    Project getByUsername(String username) throws Exception;
+    Project getDefaultProjectByUsername(String username) throws Exception;
 	
     /**
      * 根据项目获取项目及页面配置
@@ -27,5 +27,21 @@ public interface ProjectService extends BaseService<Project, String> {
      * @return
      * @throws Exception
      */
-    Map<String,Object> getProjectConfigByUser(String username) throws Exception;
+    Map<String,Object> getDefaultProjectConfigByUser(String username) throws Exception;
+
+	/**
+	 * 根据用户获取项目
+	 * @param username
+	 * @return
+	 * @throws Exception
+	 */
+	Map<String, Object> listProjectByUser(String username) throws Exception;
+
+	/**
+	 * 根据用户获取所有项目
+	 * @param username
+	 * @return
+	 * @throws Exception
+	 */
+	Map<String, Object> getConfigByProject(String project) throws Exception;
 }

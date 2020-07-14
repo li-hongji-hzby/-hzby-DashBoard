@@ -55,22 +55,32 @@ public class Scheduler {
 	private static final String FLOWRATE = "flowrate";
 	private static final String P = "P";
 
-	@SuppressWarnings("serial")
-	@Scheduled(fixedRate=10000)
+	@Scheduled(fixedRate=1000*10)
 	public void testTasks1() throws Exception {
+		preCacheMainSummary();
+		preCacheMainData();
+		preCacheRealtimeSummary();
+	}
+
+	@SuppressWarnings("serial")
+	public void preCacheMainSummary() throws Exception{
 		List<ProjectMainSummary> summaryList = projectMainSummaryService.listAll();
 		Map<String, Map<String, Double>> result =  TsdbUtils.getMainSummary(summaryList);
 		result.keySet().forEach( e -> {
 			if(result.get(e).get(FLOWRATE)>0 && result.get(e).get(P)>0) {
 				redisUtil.hmset(e, new HashMap<String,Object>(16) {{
 					put("summary",JSON.toJSONString(new HashMap<String,Double>(16){{
-						put("气",Double.parseDouble(String.format("%.2f",result.get(e).get(FLOWRATE)*60)));
-						put("电",Double.parseDouble(String.format("%.2f",result.get(e).get(P))));
-						put("单耗",Double.parseDouble(String.format("%.2f",result.get(e).get(P)/(result.get(e).get(FLOWRATE)*60))));
+						put("气",Double.parseDouble(String.format("%.0f",result.get(e).get(FLOWRATE)*60)));
+						put("电",Double.parseDouble(String.format("%.0f",result.get(e).get(P))));
+						put("单耗",Double.parseDouble(String.format("%.3f",result.get(e).get(P)/(result.get(e).get(FLOWRATE)*60))));
 					}}));
 				}});
 			}
 		});
+	}
+
+	@SuppressWarnings("serial")
+	public void preCacheMainData() throws Exception{
 		List<ProjectMainHistory> historyList = projectMainHistoryService.listAll();
 		Map<String, List<ProjectMainHistory>> projectMap = historyList.stream().collect(Collectors.groupingBy(ProjectMainHistory::getProjectNameEn));
 		projectMap.keySet().forEach( e-> {
@@ -86,8 +96,13 @@ public class Scheduler {
 				}
 			});
 		});
-		/* 处理实时数据页数据总和 */
-		List<Project> projectList = projectService.listAll().stream().collect(Collectors.collectingAndThen(Collectors.toCollection(()->new TreeSet<>(Comparator.comparing(Project::getProjectNameEn))), ArrayList::new));
+	}
+
+	@SuppressWarnings("serial")
+	public void preCacheRealtimeSummary() throws Exception{
+		// 查询所有项目并去重
+		List<Project> projectList = projectService.listAll().stream()
+				.collect(Collectors.collectingAndThen(Collectors.toCollection(()->new TreeSet<>(Comparator.comparing(Project::getProjectNameEn))), ArrayList::new));
 		List<Map<String, String>> queryMapList = new ArrayList<Map<String,String>>();
 		projectList.parallelStream().forEach( project -> {
 			try {
@@ -103,11 +118,11 @@ public class Scheduler {
 				TsdbUtils tsdbUtils  = new TsdbUtils();
 				Map<String, List<LastDataValue>> a = tsdbUtils.getRealtimeSummary(queryMapList,project.getProjectNameEn()).stream().collect(Collectors.groupingBy(LastDataValue::getMetric));
 				Map<String,Double> sumMap = new HashMap<String, Double>(16);
-				a.keySet().forEach( e-> sumMap.put(e, a.get(e).stream().mapToDouble(p -> (Double.valueOf(new DecimalFormat("#.00").format(p.getValue()))))
+				a.keySet().forEach( e -> sumMap.put(e, a.get(e).stream().mapToDouble(p -> (Double.valueOf(new DecimalFormat("#.00").format(p.getValue()))))
 							.sum()));
 				Map<String,Double> resultMap = new HashMap<String, Double>(16);
 				realTimeSummaryList.parallelStream().forEach(e -> resultMap.put(e.getDataName(), sumMap.get(e.getAttribute())));
-				resultMap.put("单耗", Double.valueOf(new DecimalFormat("#.00").format(resultMap.get("功率")/resultMap.get("流量"))));
+				resultMap.put("单耗", Double.valueOf(new DecimalFormat("#.000").format(resultMap.get("功率")/(resultMap.get("流量")*60))));
 				redisUtil.hmset(project.getProjectNameEn(), new HashMap<String, Object>(16) {{
 					put("RealTimeSummary",JSON.toJSONString(resultMap));
 				}});
@@ -116,5 +131,4 @@ public class Scheduler {
 			}
 		});
 	}
-
 }

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
+import cn.hzby.lhj.po.Project;
 import cn.hzby.lhj.po.User;
 import cn.hzby.lhj.service.ProjectService;
 import cn.hzby.lhj.service.UserService;
@@ -73,8 +74,10 @@ public class UserApi {
 					Map<String, Object> msg = new HashMap<String, Object>(16);
 					msg.put("user", username);
 					msg.put("jwt", jwtString);
-					msg.put("pageConfig", projectService.getProjectConfigByUser(username));
-					msg.put("project", projectService.getByUsername(username));
+					Project project = projectService.getDefaultProjectByUsername(username);
+					msg.put("project", project);
+					msg.put("pageConfig", projectService.getConfigByProject(project.getProjectNameEn()));
+					msg.put("allProject", projectService.listProjectByUser(username));
 					result.put("msg", JSON.toJSONString(msg));
 					result.put("code", "1");
 				}else if(!user.getStatus()){
