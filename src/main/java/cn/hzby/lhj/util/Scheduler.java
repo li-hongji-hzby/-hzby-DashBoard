@@ -4,7 +4,6 @@ package cn.hzby.lhj.util;
 
 
 
-import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -16,7 +15,6 @@ import cn.hzby.lhj.po.ProjectRealtimeSummaryWithBLOBs;
 import cn.hzby.lhj.service.ProjectRealtimeSummaryService;
 import cn.hzby.lhj.service.ProjectService;
 import com.aliyun.hitsdb.client.value.response.LastDataValue;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
