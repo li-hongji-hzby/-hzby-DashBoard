@@ -54,14 +54,13 @@ public class HistoryApi {
 				, (String) jsonObj.get("device")
 				, (String)jsonObj.get("downsample")
 				, metricsList);
-		System.out.println(jsonObj.get("downsample"));
 		Map<String, Object> result = new HashMap<>(16);
 		Stream<QueryResult> qsStream = queryResult.parallelStream();
 		// 转换数据格式并重新封装
 		// 使用并发流处理数据，约提升50%效率
 		qsStream.forEach( e -> {
 			// 日期格式化
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 			List<String> timeList= new ArrayList<>();
 			List<String> dataList= new ArrayList<>();
 			Set<Entry<Long, Object>> entries = e.getDps().entrySet();

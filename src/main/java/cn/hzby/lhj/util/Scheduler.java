@@ -107,7 +107,7 @@ public class Scheduler {
 							.sum()));
 				Map<String,Double> resultMap = new HashMap<String, Double>(16);
 				realTimeSummaryList.parallelStream().forEach(e -> resultMap.put(e.getDataName(), sumMap.get(e.getAttribute())));
-				resultMap.put("单耗", Double.valueOf(new DecimalFormat("#.00").format(resultMap.get("功率")/(resultMap.get("流量")*60))));
+				resultMap.put("单耗", Double.valueOf(new DecimalFormat("#.000").format(resultMap.get("功率")/(resultMap.get("流量")*60))));
 				redisUtil.hmset(project.getProjectNameEn(), new HashMap<String, Object>(16) {{
 					put("RealTimeSummary",JSON.toJSONString(resultMap));
 				}});
